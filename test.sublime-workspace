@@ -1,0 +1,577 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"connec",
+				"connection"
+			],
+			[
+				"requ",
+				"requiredFields"
+			],
+			[
+				"comem",
+				"commentsModifier"
+			],
+			[
+				"W",
+				"whereFlag"
+			],
+			[
+				"comme",
+				"commentsValue"
+			],
+			[
+				"com",
+				"commentsModifier"
+			],
+			[
+				"modi",
+				"commentsModifier"
+			],
+			[
+				"comm",
+				"comment_count"
+			],
+			[
+				"replace",
+				"replace"
+			],
+			[
+				"where",
+				"whereFlag"
+			],
+			[
+				"stat",
+				"status"
+			],
+			[
+				"wher",
+				"whereFlag"
+			],
+			[
+				"ty",
+				"Type"
+			],
+			[
+				"slic",
+				"slideCount"
+			],
+			[
+				"priv",
+				"primaryVideo"
+			],
+			[
+				"ima",
+				"primaryImage"
+			],
+			[
+				"prim",
+				"primaryCategory"
+			],
+			[
+				"sta",
+				"status"
+			],
+			[
+				"conte",
+				"content"
+			],
+			[
+				"modif",
+				"dateModified"
+			],
+			[
+				"da",
+				"datePublished"
+			],
+			[
+				"au",
+				"authorId"
+			],
+			[
+				"rep",
+				"replaceStr"
+			],
+			[
+				"repla",
+				"replaceArr"
+			],
+			[
+				"q",
+				"query"
+			],
+			[
+				"l",
+				"log"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"new",
+				"newProperties"
+			],
+			[
+				"replac",
+				"replace"
+			],
+			[
+				"li",
+				"limit"
+			],
+			[
+				"sor",
+				"sort"
+			],
+			[
+				"replaceS",
+				"replaceStr"
+			],
+			[
+				"sort",
+				"sortby"
+			],
+			[
+				"te",
+				"temp"
+			],
+			[
+				"req",
+				"require"
+			],
+			[
+				"get",
+				"get	.get()"
+			],
+			[
+				"ro",
+				"routes"
+			],
+			[
+				"c",
+				"createClass"
+			],
+			[
+				"class",
+				"classNamw"
+			],
+			[
+				"ren",
+				"ren	React: render: fn() { return ... }"
+			],
+			[
+				"Comm",
+				"CommentList"
+			],
+			[
+				"di",
+				"div"
+			],
+			[
+				"fi",
+				"fields"
+			],
+			[
+				"lo",
+				"log"
+			],
+			[
+				"u",
+				"url"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 348.0,
+		"last_filter": "insta",
+		"selected_items":
+		[
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"enab",
+				"Package Control: Enable Package"
+			],
+			[
+				"disa",
+				"Package Control: Disable Package"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			]
+		],
+		"width": 521.0
+	},
+	"console":
+	{
+		"height": 139.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by) "
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/agile/code/python/learning/fibo.py",
+		"/home/agile/Downloads/swagger.yaml",
+		"/home/agile/Downloads/sahiba.yaml",
+		"/home/agile/Desktop/backendAPI/package.json",
+		"/home/agile/Desktop/tapan/dummy-app/routes/index.js",
+		"/home/agile/Desktop/backendAPI/routes/err.js",
+		"/home/agile/Desktop/backendAPI/views/err.ejs",
+		"/home/agile/Desktop/backendAPI/routes/index.js",
+		"/home/agile/Desktop/backendAPI/app.js",
+		"/home/agile/Desktop/tapan/react-tutorial-master/public/scripts/tutorial.js",
+		"/home/agile/Desktop/tapan/react-tutorial-master/public/scripts/example.js",
+		"/home/agile/Desktop/tapan/react-tutorial-master/server.go",
+		"/home/agile/Desktop/tapan/swagger_ui/api/swagger.yaml",
+		"/home/agile/Desktop/folkList.txt",
+		"/home/agile/websites/abc",
+		"/home/agile/Desktop/testfolk.js",
+		"/home/agile/Desktop/log.txt",
+		"/home/agile/Desktop/abakjbdgs",
+		"/home/agile/Desktop/tapan/dummy-app/app.js",
+		"/home/agile/Desktop/tapan/dummy-app/package.json",
+		"/home/agile/Desktop/tapan/dummy-app/README.md",
+		"/home/agile/Desktop/tapan/swagger_ui/README.md",
+		"/home/agile/Desktop/LPbackend/vendor/agilemedialab/src/WSL/Backend/Store/PDO.php",
+		"/home/agile/Desktop/LPbackend/vendor/agilemedialab/src/WSL/Backend/CommentSearchOptions.php",
+		"/home/agile/Desktop/xataka-sql.sh",
+		"/home/agile/Desktop/LPbackend/vendor/agilemedialab/src/WSL/Backend/SearchOptions.php",
+		"/home/agile/Desktop/task_aj_1.php",
+		"/home/agile/Desktop/LPbackend/vendor/agilemedialab/src/WSL/Backend/Store/PDO/PDOQueryBuilder.php",
+		"/home/agile/Desktop/post response.json",
+		"/home/agile/Desktop/posts response.json",
+		"/home/agile/Desktop/LPbackend/src/WSL/FrontendBundle/Controller/API/PostsController.php",
+		"/home/agile/Desktop/LPbackend/src/WSL/FrontendBundle/Controller/SitemapsController.php",
+		"/home/agile/Desktop/LPbackend/vendor/symfony/symfony/src/Symfony/Bundle/FrameworkBundle/Controller/Controller.php",
+		"/home/agile/Desktop/LPbackend/vendor/symfony/symfony/src/Symfony/Component/DependencyInjection/ContainerAware.php",
+		"/home/agile/Desktop/LPbackend/vendor/symfony/symfony/src/Symfony/Component/DependencyInjection/ContainerAwareInterface.php",
+		"/home/agile/Desktop/LPbackend/src/WSL/Modules/RecommendedBundle/Controller/RecommendedControllerV3.php",
+		"/home/agile/Desktop/LPbackend/src/WSL/FrontendBundle/Controller/PostPageController.php",
+		"/home/agile/Desktop/LPbackend/src/WSL/FrontendBundle/Controller/FeedburnerController.php",
+		"/home/agile/Desktop/LPbackend/src/WSL/FrontendBundle/Controller/Fragments/PostController.php",
+		"/home/agile/Desktop/LPbackend/src/WSL/FrontendBundle/Controller/ClassicBlogPageController.php",
+		"/home/agile/Desktop/LPbackend/src/WSL/FrontendBundle/Controller/HomePageController.php",
+		"/home/agile/Desktop/LPbackend/src/WSL/FrontendBundle/Resources/config/services.xml",
+		"/home/agile/Desktop/LPbackend/src/WSL/BackendBundle/Command/FacebookShareCommand.php",
+		"/home/agile/Desktop/LPbackend/src/WSL/BackendBundle/Command/CloudSearchUpdateConsumerCommand.php",
+		"/home/agile/Desktop/LPbackend/src/WSL/BackendBundle/Command/AdminNotifyConsumerCommand.php",
+		"/home/agile/Desktop/LPbackend/src/WSL/FrontendBundle/Controller/Fragments/Country/PostBrandedController.php",
+		"/home/agile/Desktop/LPbackend/src/WSL/FrontendBundle/Controller/Fragments/Country/ClassicBrandedBlogPageController.php",
+		"/home/agile/Desktop/LPbackend/posts response.json",
+		"/home/agile/Desktop/test.sh",
+		"/home/agile/Desktop/a",
+		"/home/agile/Desktop/Desk/swagger(1).yaml",
+		"/home/agile/Desktop/nodejs-server/api/swagger.yaml",
+		"/home/agile/Desktop/LPbackend/src/WSL/Modules/HeaderBundle/Controller/HeaderController.php",
+		"/home/agile/Desktop/LPbackend/vendor/kriswallsmith/buzz/lib/Buzz/Message/Request.php",
+		"/home/agile/Desktop/LPbackend/vendor/guzzle/guzzle/src/Guzzle/Http/Message/Request.php",
+		"/home/agile/Desktop/LPbackend/vendor/symfony/symfony/src/Symfony/Component/BrowserKit/Request.php",
+		"/home/agile/Desktop/LPbackend/vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/Request.php",
+		"/home/agile/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/home/agile/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
+		"/home/agile/.config/sublime-text-3/Packages/User/Package Control.sublime-settings"
+	],
+	"find":
+	{
+		"height": 26.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"/home/agile/Desktop/LPbackend/src/WSL",
+			"/home/agile/Desktop/LPbackend/src",
+			"/home/agile/Desktop/LPbackend",
+			"/home/agile/Desktop/LPbackend/src/WSL",
+			"/home/agile/Desktop/LPbackend/src",
+			"/home/agile/Desktop/LPbackend",
+			"/home/agile/Desktop/LPbackend/src/WSL"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"when",
+			"post_subtype",
+			"author",
+			"toLower",
+			" query",
+			"query",
+			"type",
+			"offset",
+			"post_status",
+			"typo",
+			"type",
+			"q",
+			";\n",
+			"type",
+			"', ",
+			",",
+			"replaceString",
+			"str",
+			":",
+			"\\n\\n",
+			"render",
+			"var",
+			"\"multi\"",
+			"multi",
+			"collection",
+			"csv",
+			"platforms",
+			"javascript",
+			"\\n",
+			"\\n\\n",
+			"...........",
+			"\\n\\n",
+			"...........",
+			"..",
+			"user_nicename",
+			"            ",
+			"  ",
+			"---------------------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>",
+			"name:",
+			"author",
+			"sort",
+			"0",
+			"post_ex",
+			"type",
+			"post_type",
+			"csv",
+			"sort",
+			"[^\\ ]+status",
+			"status",
+			"type ",
+			"type",
+			"desc",
+			" |a|e|s|r|t|y|u|i|o|P",
+			"getpostcomments",
+			"a | |s|e|r|m|c|t|f",
+			"Comments\\(",
+			"comments",
+			"post_ca",
+			"days",
+			"Sort",
+			"sort",
+			"\\n\\n",
+			"post_type",
+			"sitemaps",
+			"getRecentPublishedPosts",
+			"t",
+			"e",
+			"Request",
+			"getRequest",
+			"get",
+			"PostsControlle",
+			"PostsCon",
+			"PostPageController",
+			"\\->days",
+			"\\->country",
+			"getRecentPublishedPosts",
+			"->offset",
+			"offset",
+			"offset\\",
+			"getPost\\(",
+			"getPost(",
+			"getVisiblePosts",
+			"\\$country",
+			"$country",
+			"postsBetweenBrandedClubs",
+			"postsBetweenBrandedClubs'",
+			"getVisiblePosts",
+			"getPostsFromPostsQueue",
+			"usePostsQueue",
+			"----------------------------------------------------------------------------------",
+			"fil",
+			"filter pr",
+			"filter",
+			"forumEnabled",
+			">forumEnabled",
+			"\\n\\n",
+			"country",
+			"$",
+			"getbymore",
+			"TYPE_NORMAL",
+			"STATUS_PUBLISH",
+			"true",
+			"$",
+			"function get(",
+			"get(",
+			"get\\(",
+			"get",
+			"get(",
+			"get",
+			"posttype",
+			"country",
+			"not found : ",
+			"\\$",
+			"not found :",
+			"frontendbu",
+			"not found : ",
+			"src",
+			"public",
+			"public \\$",
+			"theme",
+			"php5",
+			"\\n",
+			"\\n\\n",
+			"php5"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "test.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"symfony/component/dependencyinjection/containeraware",
+				"vendor/symfony/symfony/src/Symfony/Component/DependencyInjection/ContainerAwareInterface.php"
+			],
+			[
+				"src/wsl/frontendbundle/controller/sitemapscontroller.php",
+				"src/WSL/FrontendBundle/Controller/SitemapsController.php"
+			],
+			[
+				"src/wsl/modules/recommendedbundle/controller/recommendedcontrollerv3.php",
+				"src/WSL/Modules/RecommendedBundle/Controller/RecommendedControllerV3.php"
+			],
+			[
+				"pdo.php",
+				"vendor/agilemedialab/src/WSL/Backend/Store/PDO.php"
+			],
+			[
+				"src/wsl/modules/headerbundle/controller/headercontroller.php",
+				"src/WSL/Modules/HeaderBundle/Controller/HeaderController.php"
+			],
+			[
+				"request.php",
+				"vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/Request.php"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 239.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
