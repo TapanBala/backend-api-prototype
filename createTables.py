@@ -24,15 +24,15 @@ TABLES['wp_posts'] = (
 	"CREATE TABLE 	`wp_posts` ("
 	"	`id`		int(11) NOT NULL AUTO_INCREMENT,"
 	"	`text`		longtext NOT NULL,"
+	"	`published`	datetime NOT NULL,"
 	"	`ES`		tinyint(1) NOT NULL,"
 	"	`US`		tinyint(1) NOT NULL,"
 	"	`MX`		tinyint(1) NOT NULL,"
 	"	`CO`		tinyint(1) NOT NULL,"
-	"	`type`		varchar(10) NOT NULL,"
+	"	`type`		varchar(100) NOT NULL,"
 	"	`url`		varchar(255) NOT NULL,"
 	# "	`site`		varchar(20) NOT NULL,"
 	"	`special`	tinyint(1) NOT NULL,"
-	"	`published`	date NOT NULL,"
 	"	PRIMARY KEY	(`id`)"
 	")	ENGINE = 	InnoDB")
 

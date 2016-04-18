@@ -21,18 +21,18 @@ def createQuery(text, ES, US, MX, CO, postType, url, special, published):
 	QUERY['wp_posts'] = (
 		"INSERT INTO 	`wp_posts` ("
 		"	`text`,"
+		"	`published`,"
 		"	`ES`,"
 		"	`US`,"
 		"	`MX`,"
 		"	`CO`,"
 		"	`type`,"
 		"	`url`,"
-		"	`special`,"
-		"	`published`"
-		")	VALUES	('{}', {}, {}, {}, {}, '{}', '{}', {}, {})"
-		.format(text, ES, US, MX, CO, postType, url, special, published))
+		"	`special`"
+		")	VALUES	('{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
+		.format(text, published, ES, US, MX, CO, postType, url, special))
 
-	return QUERY['wp_posts']
+	return QUERY
 
 
 
@@ -56,25 +56,27 @@ cursor = connection.cursor()
 
 for x in range(fakerConfig['postsCount']):
 	queryConfig = {
-	'text'		: postText,
+	'text'		: fake.text(max_nb_chars=100000),
+	'published' : fake.date_time_between(start_date="-6y", end_date="now"),
 	'ES' 		: randint(0,1),
 	'US' 		: randint(0,1),
 	'MX' 		: randint(0,1),
 	'CO' 		: randint(0,1),
 	'postType' 	: postTypes[randint(0,9)],
 	'url' 		: fake.uri(),
-	'special' 	: randint(0,1),
-	'published' : fake.date_time_between(start_date="-6y", end_date="now"),
+	'special' 	: randint(0,1)
 	}
 
 	QUERIES = {}
 	QUERIES = createQuery(**queryConfig)
 
-	cursor.execute(QUERIES)
+	# print(QUERIES['wp_posts'])
+
+	cursor.execute(QUERIES['wp_posts'])
 
 	print("Query executed")
 
-
+	connection.commit()
 
 print("Data Populated")
 
