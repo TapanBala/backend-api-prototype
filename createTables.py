@@ -41,7 +41,8 @@ def createTables():
     TABLES['post2tag'] = (
         "CREATE TABLE   `post2tag` ("
         "   `post_id`   int(11) NOT NULL,"
-        "   `tag_id`    int(11) NOT NULL "
+        "   `tag_id`    int(11) NOT NULL,"
+        "   CONSTRAINT compk_post2tag PRIMARY KEY (post_id,tag_id)"
         ")  ENGINE = InnoDB")
 
     TABLES['wp_tags'] = (

@@ -11,8 +11,9 @@ dbConfig = {
 }
 
 config = {
-    'postsCount': 100,
-    'tagsCount' : 100
+    'postsCount': 6000,
+    'tagsCount' : 5540,
+    'batchLimit': 500
 }
 
 postTypes = [
@@ -29,7 +30,7 @@ postTypes = [
 
 def createPostsQuery(text, ES, US, MX, CO, postType, url, special, published):
 
-    QUERY = (
+    query = (
         "INSERT INTO `wp_posts` ("
         "   `text`,"
         "   `published`,"
@@ -52,11 +53,11 @@ def createPostsQuery(text, ES, US, MX, CO, postType, url, special, published):
             url, 
             special))
 
-    return QUERY
+    return query
 
-def appendPostsQuery(DBQuery, text, ES, US, MX, CO, postType, url, special, published):
+def appendPostsQuery(dbQuery, text, ES, US, MX, CO, postType, url, special, published):
 
-    QUERY = DBQuery + (",('{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
+    query = dbQuery + (",('{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
         .format(
         text, 
         published, 
@@ -67,31 +68,31 @@ def appendPostsQuery(DBQuery, text, ES, US, MX, CO, postType, url, special, publ
         postType, 
         url, 
         special))
-    return QUERY
+    return query
 
 def createTagsQuery(tagName):
-    QUERY = (
+    query = (
         "INSERT INTO `wp_tags` ("
         "   `name` "
         ")  VALUES  ('{}')"
         .format(tagName))
 
-    return QUERY
+    return query
 
-def appendTagsQuery(DBQuery, tagName):
-    QUERY = DBQuery + (",('{}')"
+def appendTagsQuery(dbQuery, tagName):
+    query = dbQuery + (",('{}')"
         .format(tagName))
-    return QUERY
+    return query
 
 connection = pymysql.connect(**dbConfig)
 
 cursor = connection.cursor()
 
-def populateDatabase(postsCount, tagsCount):
+def populatePosts(postsCount):
     for numberOfPosts in range(postsCount):
         queryConfig = {
-            # 'text'      : fake.text(max_nb_chars=100000),
-            'text'      : 'xxyyzz',
+            'text'      : fake.text(max_nb_chars=100000),
+            # 'text'      : 'xxyyzz',
             'published' : fake.date_time_between(start_date="-6y", end_date="now"),
             'ES'        : randint(0,1),
             'US'        : randint(0,1),
@@ -103,33 +104,55 @@ def populateDatabase(postsCount, tagsCount):
         }
 
         if numberOfPosts == 0:
-            DBQuery = createPostsQuery(**queryConfig)
+            dbQuery = createPostsQuery(**queryConfig)
         else:
-            DBQuery = appendPostsQuery(DBQuery, **queryConfig)
+            dbQuery = appendPostsQuery(dbQuery, **queryConfig)
     
-        cursor.execute(DBQuery)
+    cursor.execute(dbQuery)
     connection.commit()
+    print("Posts Query Execution completed for {} posts".format(postsCount))
 
-    print("Posts Query Executed")
-
+def populateTags(tagsCount):
     for numberOfTags in range(tagsCount):
         queryConfig = {
             'tagName'   : fake.pystr(max_chars=20)
         }
         if numberOfTags == 0:
-            DBQuery = createTagsQuery(**queryConfig)
+            dbQuery = createTagsQuery(**queryConfig)
         else:
-            DBQuery = appendTagsQuery(DBQuery, **queryConfig)
-
-        cursor.execute(DBQuery)
-    connection.commit()
+            dbQuery = appendTagsQuery(dbQuery, **queryConfig)
     
-    print("Tags Query Executed")
+    cursor.execute(dbQuery)
+    connection.commit()
+    print("Tags Query Execution completed for {} tags".format(tagsCount))
+
+def dataGenerator():
+
+    if (config['postsCount'] < config['batchLimit']) & (config['tagsCount'] < config['batchLimit']):
+        populateTags(config['tagsCount'])
+        populatePosts(config['postsCount'])
+        
+    else:
+        postsQueryCount = config['postsCount']//config['batchLimit']
+        postsQueryCountRem = config['postsCount']%config['batchLimit']
+        tagsQueryCount = config['tagsCount']//config['batchLimit']
+        tagsQueryCountRem = config['tagsCount']%config['batchLimit']
+
+        for count in range(postsQueryCount):
+            populatePosts(config['batchLimit'])
+        if postsQueryCountRem > 0:
+            populatePosts(postsQueryCountRem)
+
+        for count in range(tagsQueryCount):
+            populateTags(config['batchLimit'])
+        if tagsQueryCountRem > 0:
+            populateTags(tagsQueryCountRem)
 
     print("Data Populated")
+    print("Total posts inserted = {}".format(config['postsCount']))
+    print("Total tags inserted = {}".format(config['tagsCount']))
 
-populateDatabase()
-
+dataGenerator()
 cursor.close()
 
 connection.close()
