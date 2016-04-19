@@ -10,92 +10,125 @@ dbConfig = {
     'db'  : 'test'
 }
 
-fakerConfig = {
-	'postsCount': 1,
-	'tagsCount'	: 1
+config = {
+    'postsCount': 100,
+    'tagsCount' : 100
 }
 
+postTypes = [
+    'normal', 
+    'ecommerce', 
+    'slideshow', 
+    'video', 
+    'special', 
+    'duplicate',  
+    'branded_club', 
+    'brand_article', 
+    'longform', 
+    'reposted_slideshow']
 
 def createPostsQuery(text, ES, US, MX, CO, postType, url, special, published):
 
-	QUERY = (
-		"INSERT INTO 	`wp_posts` ("
-		"	`text`,"
-		"	`published`,"
-		"	`ES`,"
-		"	`US`,"
-		"	`MX`,"
-		"	`CO`,"
-		"	`type`,"
-		"	`url`,"
-		"	`special`"
-		")	VALUES	('{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
-		.format(text, published, ES, US, MX, CO, postType, url, special))
+    QUERY = (
+        "INSERT INTO `wp_posts` ("
+        "   `text`,"
+        "   `published`,"
+        "   `ES`,"
+        "   `US`,"
+        "   `MX`,"
+        "   `CO`,"
+        "   `type`,"
+        "   `url`,"
+        "   `special`"
+        ")  VALUES  ('{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
+        .format(
+            text, 
+            published, 
+            ES, 
+            US, 
+            MX, 
+            CO, 
+            postType, 
+            url, 
+            special))
 
-	return QUERY
+    return QUERY
+
+def appendPostsQuery(DBQuery, text, ES, US, MX, CO, postType, url, special, published):
+
+    QUERY = DBQuery + (",('{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
+        .format(
+        text, 
+        published, 
+        ES, 
+        US, 
+        MX, 
+        CO, 
+        postType, 
+        url, 
+        special))
+    return QUERY
 
 def createTagsQuery(tagName):
-	QUERY = (
-		"INSERT INTO `wp_tags` ("
-		"	`name` "
-		")	VALUES	('{}')"
-		.format(tagName))
+    QUERY = (
+        "INSERT INTO `wp_tags` ("
+        "   `name` "
+        ")  VALUES  ('{}')"
+        .format(tagName))
 
-	return QUERY
+    return QUERY
 
-postTypes = ['normal', 
-			 'ecommerce', 
-			 'slideshow', 
-			 'video', 
-			 'special', 
-			 'duplicate',  
-			 'branded_club', 
-			 'brand_article', 
-			 'longform', 
-			 'reposted_slideshow']
-
-with open('static100k.txt', 'r') as myfile:
-	postText=myfile.read()
+def appendTagsQuery(DBQuery, tagName):
+    QUERY = DBQuery + (",('{}')"
+        .format(tagName))
+    return QUERY
 
 connection = pymysql.connect(**dbConfig)
 
 cursor = connection.cursor()
 
-for x in range(fakerConfig['postsCount']):
-	queryConfig = {
-		'text'		: fake.text(max_nb_chars=100000),
-		'published' : fake.date_time_between(start_date="-6y", end_date="now"),
-		'ES' 		: randint(0,1),
-		'US' 		: randint(0,1),
-		'MX' 		: randint(0,1),
-		'CO' 		: randint(0,1),
-		'postType' 	: postTypes[randint(0,9)],
-		'url' 		: fake.uri(),
-		'special' 	: randint(0,1)
-	}
+def populateDatabase(postsCount, tagsCount):
+    for numberOfPosts in range(postsCount):
+        queryConfig = {
+            # 'text'      : fake.text(max_nb_chars=100000),
+            'text'      : 'xxyyzz',
+            'published' : fake.date_time_between(start_date="-6y", end_date="now"),
+            'ES'        : randint(0,1),
+            'US'        : randint(0,1),
+            'MX'        : randint(0,1),
+            'CO'        : randint(0,1),
+            'postType'  : postTypes[randint(0,9)],
+            'url'       : fake.uri(),
+            'special'   : randint(0,1)
+        }
 
-	DBQuery = {}
-	DBQuery = createPostsQuery(**queryConfig)
+        if numberOfPosts == 0:
+            DBQuery = createPostsQuery(**queryConfig)
+        else:
+            DBQuery = appendPostsQuery(DBQuery, **queryConfig)
+    
+        cursor.execute(DBQuery)
+    connection.commit()
 
-	cursor.execute(DBQuery)
-	connection.commit()
-	print("Posts Query Executed")
+    print("Posts Query Executed")
 
-for x in range(fakerConfig['tagsCount']):
-	queryConfig = {
-		'tagName'	: fake.pystr(max_chars=20)
-	}
+    for numberOfTags in range(tagsCount):
+        queryConfig = {
+            'tagName'   : fake.pystr(max_chars=20)
+        }
+        if numberOfTags == 0:
+            DBQuery = createTagsQuery(**queryConfig)
+        else:
+            DBQuery = appendTagsQuery(DBQuery, **queryConfig)
 
-	DBQuery = {}
-	DBQuery = createTagsQuery(**queryConfig)
+        cursor.execute(DBQuery)
+    connection.commit()
+    
+    print("Tags Query Executed")
 
-	cursor.execute(DBQuery)
-	connection.commit()
-	print("Tags Query Executed")
+    print("Data Populated")
 
-print("Data Populated")
-
-
+populateDatabase()
 
 cursor.close()
 
