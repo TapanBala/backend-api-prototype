@@ -31,11 +31,11 @@ def batchInsertPosts(postList):
     cursor.execute(query)
     connection.commit()
 
-def batchInsert(postsCount):
+def insertPosts(postsCount):
     postList = []
     for numberOfPosts in range(postsCount):
-        # text      = fake.text(max_nb_chars = 100000)
-        text      = 'xxyyzz'
+        text      = fake.text(max_nb_chars = 100000)
+        # text      = 'xxyyzz'
         published = fake.date_time_between(start_date = "-6y", end_date = "now")
         ES        = randint(0,1)
         US        = randint(0,1)
@@ -58,7 +58,7 @@ def batchInsert(postsCount):
     batchInsertPosts(postList)
     print("Posts Query Execution completed for {} posts".format(postsCount))
 
-def populateTags(tagsCount):
+def insertTags(tagsCount):
     tagList = []
     for numberOfTags in range(tagsCount):
         tagName   = fake.pystr(max_chars = 20)
@@ -69,21 +69,21 @@ def populateTags(tagsCount):
 
 def dataGenerator():
     if (config['postsCount'] < config['batchSize']) & (config['tagsCount'] < config['batchSize']):
-        populateTags(config['tagsCount'])
-        batchInsert(config['postsCount'])
+        insertTags(config['tagsCount'])
+        insertPosts(config['postsCount'])
     else:
-        batchCount = config['postsCount'] // config['batchSize']
-        remainderBatch = config['postsCount'] % config['batchSize']
-        tagsQueryCount = config['tagsCount'] // config['batchSize']
-        tagsQueryCountRem = config['tagsCount'] % config['batchSize']
-        for count in range(batchCount):
-            batchInsert(config['batchSize'])
-        if remainderBatch > 0:
-            batchInsert(remainderBatch)
-        for count in range(tagsQueryCount):
-            populateTags(config['batchSize'])
-        if tagsQueryCountRem > 0:
-            populateTags(tagsQueryCountRem)
+        postBatchCount = config['postsCount'] // config['batchSize']
+        remainderPostBatch = config['postsCount'] % config['batchSize']
+        tagBatchCount = config['tagsCount'] // config['batchSize']
+        remainderTagBatch = config['tagsCount'] % config['batchSize']
+        for count in range(postBatchCount):
+            insertPosts(config['batchSize'])
+        if remainderPostBatch > 0:
+            insertPosts(remainderPostBatch)
+        for count in range(tagBatchCount):
+            insertTags(config['batchSize'])
+        if remainderTagBatch > 0:
+            insertTags(remainderTagBatch)
     print("Data Populated")
     print("Total posts inserted = {}".format(config['postsCount']))
     print("Total tags inserted = {}".format(config['tagsCount']))

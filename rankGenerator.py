@@ -51,7 +51,7 @@ def rankListBuilder(rankList, dbData):
         rankList = country2rankListBuilder(rankList, dbData[0], 'CO')
     return rankList
 
-def batchInsert(limit, offset):
+def insertRank(limit, offset):
     rankList = []
     dbData = getPosts(limit, offset)
     for data in range(limit):
@@ -63,17 +63,17 @@ def rankGenerator():
     offset = 0
     limit = config['totalPosts']
     if (config['totalPosts'] < config['batchSize']):
-        batchInsert(limit, offset)
+        insertRank(limit, offset)
     else:
         batchCount = config['totalPosts'] // config['batchSize']
         remainderBatch = config['totalPosts'] % config['batchSize']
         limit = config['batchSize']
         for count in range(batchCount):
-            batchInsert(limit, offset)
+            insertRank(limit, offset)
             offset = (count + 1) * config['batchSize']
         if remainderBatch > 0:
             limit = remainderBatch
-            batchInsert(limit, offset)
+            insertRank(limit, offset)
     print("Total ES Ranks Generated : {}".format(rankConfig['ES']))
     print("Total US Ranks Generated : {}".format(rankConfig['US']))
     print("Total MX Ranks Generated : {}".format(rankConfig['MX']))

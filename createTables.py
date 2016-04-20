@@ -41,7 +41,8 @@ def createTables():
         "CREATE TABLE   `posts_queue` ("
         "   `post_id`   int(11) NOT NULL,"
         "   `country`   varchar(3) ,"
-        "   `rank`      int(11) "
+        "   `rank`      int(11) ,"
+        "   KEY country_rank (country, rank)"
         ")  ENGINE = InnoDB")
     for name, dbq in TABLES.items():
         try:

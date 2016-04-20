@@ -21,7 +21,7 @@ postTypes = [
     'brand_article', 
     'longform', 
     'reposted_slideshow'
-    ]
+]
 
 relationGeneratorConfig = {
     'batchSize': 500
