@@ -1,4 +1,3 @@
-from __future__ import print_function
 import pymysql.cursors
 from config import dbConfig
 
@@ -8,8 +7,6 @@ except Exception as err:
     print(err)
 else:
     print("Connection to database successful")
-
-cursor = connection.cursor()
 
 def createTables():
     TABLES = {}
@@ -55,6 +52,7 @@ def createTables():
         else:
             print("OK")
 
+cursor = connection.cursor()
 createTables()
 cursor.close()
 connection.close()

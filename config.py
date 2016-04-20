@@ -7,7 +7,7 @@ dbConfig = {
 populatorConfig = {
     'postsCount': 6000,
     'tagsCount' : 5500,
-    'batchLimit': 500
+    'batchSize' : 500
 }
 
 postTypes = [
@@ -20,12 +20,13 @@ postTypes = [
     'branded_club', 
     'brand_article', 
     'longform', 
-    'reposted_slideshow']
+    'reposted_slideshow'
+    ]
 
 relationGeneratorConfig = {
-	'batchSize': 500
+    'batchSize': 500
 }
 
 rankGeneratorConfig = {
-	'batchSize': 500
+    'batchSize': 500
 }

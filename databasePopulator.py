@@ -5,16 +5,17 @@ from config import dbConfig, postTypes, populatorConfig as config
 
 fake = Faker()
 
-def tagsQueryBuilder(queryList):
-    query = ",".join(queryList)
+def batchInsertTags(tagList):
+    query = ",".join(tagList)
     query = (
         "INSERT INTO `wp_tags` ("
         "   `name` "
         ")  VALUES  " + query)
-    return query
+    cursor.execute(query)
+    connection.commit()
 
-def postsQueryBuilder(queryList):
-    query = ",".join(queryList)
+def batchInsertPosts(postList):
+    query = ",".join(postList)
     query = (
         "INSERT INTO `wp_posts` ("
         "   `text`,"
@@ -27,10 +28,11 @@ def postsQueryBuilder(queryList):
         "   `url`,"
         "   `special`"
         ")  VALUES  " + query)
-    return query
+    cursor.execute(query)
+    connection.commit()
 
-def populatePosts(postsCount):
-    queryList = []
+def batchInsert(postsCount):
+    postList = []
     for numberOfPosts in range(postsCount):
         # text      = fake.text(max_nb_chars = 100000)
         text      = 'xxyyzz'
@@ -42,7 +44,7 @@ def populatePosts(postsCount):
         postType  = postTypes[randint(0,9)]
         url       = fake.uri()
         special   = randint(0,1)
-        queryList.append("('{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
+        postList.append("('{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
             .format(
                 text, 
                 published, 
@@ -53,37 +55,33 @@ def populatePosts(postsCount):
                 postType, 
                 url, 
                 special))
-    dbQuery = postsQueryBuilder(queryList)
-    cursor.execute(dbQuery)
-    connection.commit()
+    batchInsertPosts(postList)
     print("Posts Query Execution completed for {} posts".format(postsCount))
 
 def populateTags(tagsCount):
-    queryList = []
+    tagList = []
     for numberOfTags in range(tagsCount):
         tagName   = fake.pystr(max_chars = 20)
-        queryList.append("('{}')"
+        tagList.append("('{}')"
             .format(tagName))
-    dbQuery = tagsQueryBuilder(queryList)
-    cursor.execute(dbQuery)
-    connection.commit()
+    batchInsertTags(tagList)
     print("Tags Query Execution completed for {} tags".format(tagsCount))
 
 def dataGenerator():
-    if (config['postsCount'] < config['batchLimit']) & (config['tagsCount'] < config['batchLimit']):
+    if (config['postsCount'] < config['batchSize']) & (config['tagsCount'] < config['batchSize']):
         populateTags(config['tagsCount'])
-        populatePosts(config['postsCount'])
+        batchInsert(config['postsCount'])
     else:
-        postsQueryCount = config['postsCount'] // config['batchLimit']
-        postsQueryCountRem = config['postsCount'] % config['batchLimit']
-        tagsQueryCount = config['tagsCount'] // config['batchLimit']
-        tagsQueryCountRem = config['tagsCount']% config['batchLimit']
-        for count in range(postsQueryCount):
-            populatePosts(config['batchLimit'])
-        if postsQueryCountRem > 0:
-            populatePosts(postsQueryCountRem)
+        batchCount = config['postsCount'] // config['batchSize']
+        remainderBatch = config['postsCount'] % config['batchSize']
+        tagsQueryCount = config['tagsCount'] // config['batchSize']
+        tagsQueryCountRem = config['tagsCount'] % config['batchSize']
+        for count in range(batchCount):
+            batchInsert(config['batchSize'])
+        if remainderBatch > 0:
+            batchInsert(remainderBatch)
         for count in range(tagsQueryCount):
-            populateTags(config['batchLimit'])
+            populateTags(config['batchSize'])
         if tagsQueryCountRem > 0:
             populateTags(tagsQueryCountRem)
     print("Data Populated")

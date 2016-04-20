@@ -12,17 +12,18 @@ def getCounts():
     cursor.execute(query)
     config['totalTags'] = cursor.fetchone()[0]
 
-def relationQueryBuilder(queryList):
-    query = ",".join(queryList)
+def batchInsertRelations(post2tagList):
+    query = ",".join(post2tagList)
     query = (
         "INSERT INTO `post2tag` ("
         "   `post_id`,"
         "   `tag_id`"
         ")  VALUES  " + query)
-    return query
+    cursor.execute(query)
+    connection.commit()
 
-def createTagRelations(startPostId, endPostId):
-    queryList = []
+def batchInsert(startPostId, endPostId):
+    post2tagList = []
     global totalRelations
     for postId in range(startPostId, (endPostId+1)):
         postTagCount = randint(3,5)
@@ -32,39 +33,37 @@ def createTagRelations(startPostId, endPostId):
         endRange = tagIdRange
         for tagCounter in range(postTagCount):
             tagId = randint(startRange, endRange)
-            queryList.append("({}, {})".format(postId, tagId))
+            post2tagList.append("({}, {})".format(postId, tagId))
             startRange = endRange + 1
             condition = endRange + (tagIdRange * 2)
             if (condition > config['totalTags']):
                 endRange = config['totalTags']
             else:
                 endRange = endRange + tagIdRange
-    dbQuery = relationQueryBuilder(queryList)
-    cursor.execute(dbQuery)
-    connection.commit()
+    batchInsertRelations(post2tagList)
     print("Tag relations created for {} posts : {}".format(postId, totalRelations))
 
-def createPostRelations():
+def createRelations():
     getCounts()
     startPostId = 1
     endPostId = config['totalPosts']
     if (config['totalPosts'] < config['batchSize']):
-        createTagRelations(startPostId, endPostId)
+        batchInsert(startPostId, endPostId)
     else:
-        batches = config['totalPosts'] // config['batchSize']
-        remainingPosts = config['totalPosts'] % config['batchSize']
+        batchCount = config['totalPosts'] // config['batchSize']
+        remainderBatch = config['totalPosts'] % config['batchSize']
         endPostId = config['batchSize']
-        for count in range(batches):
-            createTagRelations(startPostId, endPostId)
+        for count in range(batchCount):
+            batchInsert(startPostId, endPostId)
             startPostId = endPostId + 1
             endPostId = endPostId + config['batchSize']
-        if remainingPosts > 0:
-            endPostId = startPostId + remainingPosts - 1
-            createTagRelations(startPostId, endPostId)
+        if remainderBatch > 0:
+            endPostId = startPostId + remainderBatch - 1
+            batchInsert(startPostId, endPostId)
     print("Relations created for total of {} posts : {}".format(config['totalPosts'], totalRelations))
 
 connection = pymysql.connect(**dbConfig)
 cursor = connection.cursor()
-createPostRelations()
+createRelations()
 cursor.close()
 connection.close()

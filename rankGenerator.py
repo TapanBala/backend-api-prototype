@@ -23,58 +23,57 @@ def getPosts(limit, offset):
     result = cursor.fetchall()
     return result
 
-def rankQueryBuilder(queryList):
-    query = ",".join(queryList)
+def batchInsertRank(rankList):
+    query = ",".join(rankList)
     query = (
         "INSERT INTO posts_queue ("
         "   post_id,"
         "   country,"
         "   rank    "
         ")  VALUES  " + query)
-    return query
-
-def countryQueryListBuilder(queryList, postId, country):
-    rankConfig[country] = rankConfig[country] + 1
-    queryList.append("({}, '{}', {})"
-        .format(postId, country, rankConfig[country]))
-    return queryList
-
-def queryListBuilder(queryList, dbData):
-    if dbData[1] == 1:
-        queryList = countryQueryListBuilder(queryList, dbData[0], 'ES')
-    if dbData[2] == 1:
-        queryList = countryQueryListBuilder(queryList, dbData[0], 'US')
-    if dbData[3] == 1:
-        queryList = countryQueryListBuilder(queryList, dbData[0], 'MX')
-    if dbData[4] == 1:
-        queryList = countryQueryListBuilder(queryList, dbData[0], 'CO')
-    return queryList
-
-def rankBuilder(limit, offset):
-    queryList = []
-    dbData = getPosts(limit, offset)
-    for data in range(limit):
-        queryList = queryListBuilder(queryList, dbData[data])
-    dbQuery = rankQueryBuilder(queryList)
-    cursor.execute(dbQuery)
+    cursor.execute(query)
     connection.commit()
 
-def process():
+def country2rankListBuilder(rankList, postId, country):
+    rankConfig[country] = rankConfig[country] + 1
+    rankList.append("({}, '{}', {})"
+        .format(postId, country, rankConfig[country]))
+    return rankList
+
+def rankListBuilder(rankList, dbData):
+    if dbData[1] == 1:
+        rankList = country2rankListBuilder(rankList, dbData[0], 'ES')
+    if dbData[2] == 1:
+        rankList = country2rankListBuilder(rankList, dbData[0], 'US')
+    if dbData[3] == 1:
+        rankList = country2rankListBuilder(rankList, dbData[0], 'MX')
+    if dbData[4] == 1:
+        rankList = country2rankListBuilder(rankList, dbData[0], 'CO')
+    return rankList
+
+def batchInsert(limit, offset):
+    rankList = []
+    dbData = getPosts(limit, offset)
+    for data in range(limit):
+        rankList = rankListBuilder(rankList, dbData[data])
+    batchInsertRank(rankList)
+
+def rankGenerator():
     getCounts()
     offset = 0
     limit = config['totalPosts']
     if (config['totalPosts'] < config['batchSize']):
-        rankBuilder(limit, offset)
+        batchInsert(limit, offset)
     else:
-        batches = config['totalPosts'] // config['batchSize']
-        remainingPosts = config['totalPosts'] % config['batchSize']
+        batchCount = config['totalPosts'] // config['batchSize']
+        remainderBatch = config['totalPosts'] % config['batchSize']
         limit = config['batchSize']
-        for count in range(batches):
-            rankBuilder(limit, offset)
+        for count in range(batchCount):
+            batchInsert(limit, offset)
             offset = (count + 1) * config['batchSize']
-        if remainingPosts > 0:
-            limit = remainingPosts
-            rankBuilder(limit, offset)
+        if remainderBatch > 0:
+            limit = remainderBatch
+            batchInsert(limit, offset)
     print("Total ES Ranks Generated : {}".format(rankConfig['ES']))
     print("Total US Ranks Generated : {}".format(rankConfig['US']))
     print("Total MX Ranks Generated : {}".format(rankConfig['MX']))
@@ -82,6 +81,6 @@ def process():
 
 connection = pymysql.connect(**dbConfig)
 cursor = connection.cursor()
-process()
+rankGenerator()
 cursor.close()
 connection.close()
