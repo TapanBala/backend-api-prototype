@@ -3,14 +3,14 @@ from __future__ import print_function
 
 import pymysql.cursors
 
-config = {
+dbConfig = {
     'user': 'root',
     'host': 'localhost',
     'db'  : 'test'
 }
 
 try:
-    connection = pymysql.connect(**config)
+    connection = pymysql.connect(**dbConfig)
 except Exception as err:
     print(err)
 else:

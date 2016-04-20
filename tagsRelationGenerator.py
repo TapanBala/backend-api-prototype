@@ -1,6 +1,5 @@
 import pymysql.cursors
 from random import randint
-from faker import Faker
 
 dbConfig = {
     'user': 'root',
@@ -11,6 +10,8 @@ dbConfig = {
 config = {
     'batchSize': 500
 }
+
+totalRelations = 0
 
 def getCounts():
 
@@ -38,10 +39,27 @@ def appendLinkQuery(dbQuery, postId, tagId):
         .format(postId, tagId))
     return query
 
+def relationQueryBuilder(dbQuery, postId, tagId):
+
+    if dbQuery == '':
+        query = (
+            "INSERT INTO `post2tag` ("
+            "   `post_id`,"
+            "   `tag_id`"
+            ")  VALUES  ({}, {})"
+            .format(postId, tagId))
+        return query
+    else:
+        query = dbQuery + (",({}, {})"
+            .format(postId, tagId))
+        return query
+
 def createTagRelations(startPostId, endPostId):
-    
+    query = ''
+    global totalRelations
     for postId in range(startPostId, (endPostId+1)):
         postTagCount = randint(3,5)
+        totalRelations = totalRelations + postTagCount
         tagIdRange = config['totalTags']//postTagCount
         startRange = 1
         endRange = tagIdRange
@@ -49,12 +67,7 @@ def createTagRelations(startPostId, endPostId):
         for tagCounter in range(postTagCount):
             
             tagId = randint(startRange, endRange)
-            if (tagCounter == 0) & (postId == startPostId):
-                query = createLinkQuery(postId, tagId)
-                
-            else:
-                query = appendLinkQuery(query, postId, tagId)
-
+            query = relationQueryBuilder(query, postId, tagId)
             startRange = endRange + 1
             condition = endRange + (tagIdRange*2)
             if (condition > config['totalTags']):
@@ -66,7 +79,7 @@ def createTagRelations(startPostId, endPostId):
     cursor.execute(query)
 
     connection.commit()
-    print("Tag relations created : {}".format(postId))
+    print("Tag relations created for {} posts : {}".format(postId, totalRelations))
 
 def createPostRelations():
 
@@ -82,18 +95,15 @@ def createPostRelations():
         remainingPosts = config['totalPosts']%config['batchSize']
         endPostId = config['batchSize']
 
-        if batches > 0:
-            for count in range(batches):
-                createTagRelations(startPostId, endPostId)
-                startPostId = endPostId + 1
-                endPostId = endPostId + config['batchSize']
-            if remainingPosts > 0:
-                endPostId = startPostId + remainingPosts - 1
-                createTagRelations(startPostId, endPostId)
-        else:
-            createTagRelations(startPostId, remainingPosts)
+        for count in range(batches):
+            createTagRelations(startPostId, endPostId)
+            startPostId = endPostId + 1
+            endPostId = endPostId + config['batchSize']
+        if remainingPosts > 0:
+            endPostId = startPostId + remainingPosts - 1
+            createTagRelations(startPostId, endPostId)
 
-    print("Relations created for total of {} posts".format(config['totalPosts']))
+    print("Relations created for total of {} posts : {}".format(config['totalPosts'], totalRelations))
 
 connection = pymysql.connect(**dbConfig)
 cursor = connection.cursor()

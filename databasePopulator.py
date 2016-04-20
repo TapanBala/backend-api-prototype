@@ -11,8 +11,8 @@ dbConfig = {
 }
 
 config = {
-    'postsCount': 6000,
-    'tagsCount' : 5540,
+    'postsCount': 60,
+    'tagsCount' : 55,
     'batchLimit': 500
 }
 
