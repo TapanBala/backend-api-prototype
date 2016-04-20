@@ -1,13 +1,6 @@
-
 from __future__ import print_function
-
 import pymysql.cursors
-
-dbConfig = {
-    'user': 'root',
-    'host': 'localhost',
-    'db'  : 'test'
-}
+from config import dbConfig
 
 try:
     connection = pymysql.connect(**dbConfig)
@@ -19,9 +12,7 @@ else:
 cursor = connection.cursor()
 
 def createTables():
-
     TABLES = {}
-
     TABLES['wp_posts'] = (
         "CREATE TABLE   `wp_posts` ("
         "   `id`        int(11) NOT NULL AUTO_INCREMENT,"
@@ -37,32 +28,27 @@ def createTables():
         "   `special`   tinyint(1) NOT NULL,"
         "   PRIMARY KEY (`id`)"
         ")  ENGINE = InnoDB")
-
     TABLES['post2tag'] = (
         "CREATE TABLE   `post2tag` ("
         "   `post_id`   int(11) NOT NULL,"
         "   `tag_id`    int(11) NOT NULL,"
         "   CONSTRAINT compk_post2tag PRIMARY KEY (post_id,tag_id)"
         ")  ENGINE = InnoDB")
-
     TABLES['wp_tags'] = (
         "CREATE TABLE   `wp_tags` ("
         "   `id`        int(11) NOT NULL AUTO_INCREMENT,"
         "   `name`      varchar(255) NOT NULL,"
         "   PRIMARY KEY (`id`)"
         ")  ENGINE = InnoDB")
-
     TABLES['posts_queue'] = (
         "CREATE TABLE   `posts_queue` ("
         "   `post_id`   int(11) NOT NULL,"
         "   `country`   varchar(3) ,"
         "   `rank`      int(11) "
         ")  ENGINE = InnoDB")
-
-
     for name, dbq in TABLES.items():
         try:
-            print("Creating table {}: ".format(name), end='')
+            print("Creating table {}: ".format(name), end = '')
             cursor.execute(dbq)
         except Exception as err:
             print(err)
@@ -70,7 +56,5 @@ def createTables():
             print("OK")
 
 createTables()
-
 cursor.close()
-
 connection.close()

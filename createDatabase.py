@@ -1,10 +1,5 @@
 import pymysql.cursors
-
-dbConfig = {
-    'user': 'root',
-    'host': 'localhost',
-    'db'  : 'test'
-}
+from config import dbConfig
 
 def createDatabase(cursor):
     try:
@@ -18,7 +13,7 @@ try:
     connection = pymysql.connect(**dbConfig)
 except Exception as err:
     print(err)
-    connection = pymysql.connect(user = 'root')
+    connection = pymysql.connect(user = dbConfig['root'], host = dbConfig['host'])
     cursor = connection.cursor()
     createDatabase(cursor)
 else:

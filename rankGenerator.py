@@ -1,156 +1,87 @@
 import pymysql.cursors
 from random import randint
+from config import dbConfig, rankGeneratorConfig as config
 
-dbConfig = {
-    'user': 'root',
-    'host': 'localhost',
-    'db'  : 'test'
+rankConfig = {
+    'ES': 0,
+    'US': 0,
+    'MX': 0,
+    'CO': 0
 }
-
-config = {
-    'batchSize': 500
-}
-
-
-ESRank = 0
-USRank = 0
-MXRank = 0
-CORank = 0
 
 def getCounts():
-
     query = "SELECT id FROM wp_posts ORDER BY id DESC LIMIT 1"
     cursor.execute(query)
     config['totalPosts'] = cursor.fetchone()[0]
-
-    query = "SELECT COUNT(*) FROM wp_tags"
+    query = "SELECT id FROM wp_tags ORDER BY id DESC LIMIT 1"
     cursor.execute(query)
     config['totalTags'] = cursor.fetchone()[0]
 
-def getDBData(limit, offset):
+def getPosts(limit, offset):
     query = ("SELECT id, ES, US, MX, CO FROM wp_posts ORDER BY id ASC LIMIT {} OFFSET {}".format(limit, offset))
     cursor.execute(query)
     result = cursor.fetchall()
     return result
 
-def ESQueryGenerator(dbQuery, postId, ES):
-    global ESRank
-    ESRank = ESRank + 1
-    if dbQuery == '':
-        query = (
-            "INSERT INTO posts_queue ("
-            "   post_id,"
-            "   country,"
-            "   rank    "
-            ")  VALUES ({}, '{}', {})"
-            .format(postId, 'ES', ESRank))
-    else:
-        query = dbQuery + (",({}, '{}', {})"
-            .format(postId, 'ES', ESRank))
+def rankQueryBuilder(queryList):
+    query = ",".join(queryList)
+    query = (
+        "INSERT INTO posts_queue ("
+        "   post_id,"
+        "   country,"
+        "   rank    "
+        ")  VALUES  " + query)
     return query
 
-def USQueryGenerator(dbQuery, postId, US):
-    global USRank
-    USRank = USRank + 1
-    if dbQuery == '':
-        query = (
-            "INSERT INTO posts_queue ("
-            "   post_id,"
-            "   country,"
-            "   rank    "
-            ")  VALUES ({}, '{}', {})"
-            .format(postId, 'US', USRank))
-    else:
-        query = dbQuery + (",({}, '{}', {})"
-            .format(postId, 'US', USRank))
-    return query
+def countryQueryListBuilder(queryList, postId, country):
+    rankConfig[country] = rankConfig[country] + 1
+    queryList.append("({}, '{}', {})"
+        .format(postId, country, rankConfig[country]))
+    return queryList
 
-def MXQueryGenerator(dbQuery, postId, MX):
-    global MXRank
-    MXRank = MXRank + 1
-    if dbQuery == '':
-        query = (
-            "INSERT INTO posts_queue ("
-            "   post_id,"
-            "   country,"
-            "   rank    "
-            ")  VALUES ({}, '{}', {})"
-            .format(postId, 'MX', MXRank))
-    else:
-        query = dbQuery + (",({}, '{}', {})"
-            .format(postId, 'MX', MXRank))
-    return query
-
-def COQueryGenerator(dbQuery, postId, CO):
-    global CORank
-    CORank = CORank + 1
-    if dbQuery == '':
-        query = (
-            "INSERT INTO posts_queue ("
-            "   post_id,"
-            "   country,"
-            "   rank    "
-            ")  VALUES ({}, '{}', {})"
-            .format(postId, 'CO', CORank))
-    else:
-        query = dbQuery + (",({}, '{}', {})"
-            .format(postId, 'CO', CORank))
-    return query
-
-def queryGenerator(dbQuery, dbData):
-
-
+def queryListBuilder(queryList, dbData):
     if dbData[1] == 1:
-        dbQuery = ESQueryGenerator(dbQuery, dbData[0], dbData[1])
+        queryList = countryQueryListBuilder(queryList, dbData[0], 'ES')
     if dbData[2] == 1:
-        dbQuery = USQueryGenerator(dbQuery, dbData[0], dbData[2])
+        queryList = countryQueryListBuilder(queryList, dbData[0], 'US')
     if dbData[3] == 1:
-        dbQuery = MXQueryGenerator(dbQuery, dbData[0], dbData[3])
+        queryList = countryQueryListBuilder(queryList, dbData[0], 'MX')
     if dbData[4] == 1:
-        dbQuery = COQueryGenerator(dbQuery, dbData[0], dbData[4])
-    return dbQuery
+        queryList = countryQueryListBuilder(queryList, dbData[0], 'CO')
+    return queryList
 
-def rankGenerator(limit, offset):
-
-    query = ''
-    dbData = getDBData(limit, offset)
-
+def rankBuilder(limit, offset):
+    queryList = []
+    dbData = getPosts(limit, offset)
     for data in range(limit):
-        query = queryGenerator(query, dbData[data])
-
-    cursor.execute(query)
+        queryList = queryListBuilder(queryList, dbData[data])
+    dbQuery = rankQueryBuilder(queryList)
+    cursor.execute(dbQuery)
     connection.commit()
 
 def process():
-
     getCounts()
     offset = 0
     limit = config['totalPosts']
-
     if (config['totalPosts'] < config['batchSize']):
-        rankGenerator(limit, offset)
-
+        rankBuilder(limit, offset)
     else:
-        batches = config['totalPosts']//config['batchSize']
-        remainingPosts = config['totalPosts']%config['batchSize']
+        batches = config['totalPosts'] // config['batchSize']
+        remainingPosts = config['totalPosts'] % config['batchSize']
         limit = config['batchSize']
-
-        
         for count in range(batches):
-            rankGenerator(limit, offset)
+            rankBuilder(limit, offset)
             offset = (count + 1) * config['batchSize']
         if remainingPosts > 0:
             limit = remainingPosts
-            rankGenerator(limit, offset)
-
-    print("Total ES Ranks Generated : {}".format(ESRank))
-    print("Total US Ranks Generated : {}".format(USRank))
-    print("Total MX Ranks Generated : {}".format(MXRank))
-    print("Total CO Ranks Generated : {}".format(CORank))
+            rankBuilder(limit, offset)
+    print("Total ES Ranks Generated : {}".format(rankConfig['ES']))
+    print("Total US Ranks Generated : {}".format(rankConfig['US']))
+    print("Total MX Ranks Generated : {}".format(rankConfig['MX']))
+    print("Total CO Ranks Generated : {}".format(rankConfig['CO']))
 
 connection = pymysql.connect(**dbConfig)
 cursor = connection.cursor()
 process()
 cursor.close()
 connection.close()
-
