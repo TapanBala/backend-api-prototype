@@ -1,16 +1,7 @@
 import pymysql.cursors
 from random import randint
 from faker import Faker
-from config import dbConfig, postTypes, populatorConfig
-
-def batchInsertTags(tags):
-    query = ",".join(tags)
-    query = (
-        "INSERT INTO `wp_tags` ("
-        "   `name` "
-        ")  VALUES  " + query)
-    cursor.execute(query)
-    connection.commit()
+from config import dbConfig, postTypes, postsPopulatorConfig
 
 def batchInsertPosts(posts):
     query = ",".join(posts)
@@ -61,34 +52,17 @@ def insertPosts(postsCount):
     batchInsertPosts(posts)
     print("Posts Insertion completed for {} posts".format(postsCount))
 
-def insertTags(tagsCount):
-    tags = []
-    for numberOfTags in range(tagsCount):
-        tagName   = fake.pystr(max_chars = 20)
-        tags.append("('{}')"
-            .format(tagName))
-    batchInsertTags(tags)
-    print("Tags Insertion completed for {} tags".format(tagsCount))
-
 def generateData():
-    if (populatorConfig['postsCount'] < populatorConfig['batchSize']) & (populatorConfig['tagsCount'] < populatorConfig['batchSize']):
-        insertPosts(populatorConfig['postsCount'])
-        insertTags(populatorConfig['tagsCount'])
+    if (postsPopulatorConfig['postsCount'] < postsPopulatorConfig['batchSize']):
+        insertPosts(postsPopulatorConfig['postsCount'])
     else:
-        postBatchCount = populatorConfig['postsCount'] // populatorConfig['batchSize']
-        remainderPostBatch = populatorConfig['postsCount'] % populatorConfig['batchSize']
-        tagBatchCount = populatorConfig['tagsCount'] // populatorConfig['batchSize']
-        remainderTagBatch = populatorConfig['tagsCount'] % populatorConfig['batchSize']
+        postBatchCount = postsPopulatorConfig['postsCount'] // postsPopulatorConfig['batchSize']
+        remainderPostBatch = postsPopulatorConfig['postsCount'] % postsPopulatorConfig['batchSize']
         for count in range(postBatchCount):
-            insertPosts(populatorConfig['batchSize'])
+            insertPosts(postsPopulatorConfig['batchSize'])
         if remainderPostBatch > 0:
             insertPosts(remainderPostBatch)
-        for count in range(tagBatchCount):
-            insertTags(populatorConfig['batchSize'])
-        if remainderTagBatch > 0:
-            insertTags(remainderTagBatch)
-    print("Total posts inserted = {}".format(populatorConfig['postsCount']))
-    print("Total tags inserted = {}".format(populatorConfig['tagsCount']))
+    print("Total posts inserted = {}".format(postsPopulatorConfig['postsCount']))
 
 def process(postSite):
     global connection, cursor, fake
@@ -99,7 +73,7 @@ def process(postSite):
     postId = 1
     site = postSite
     print("=====================================================")
-    print("Generating data for ---> {}".format(site))
+    print("Generating Post data for ---> {}".format(site))
     generateData()
     print("=====================================================")
     cursor.close()

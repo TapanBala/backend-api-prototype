@@ -16,7 +16,6 @@ def getPostCount():
 
 def getPosts(limit, offset):
     query = ("SELECT id, ES, US, MX, CO FROM wp_posts WHERE site = '{}' AND id > {} ORDER BY id ASC LIMIT {}".format(site, offset, limit))
-    print(query)
     cursor.execute(query)
     result = cursor.fetchall()
     return result

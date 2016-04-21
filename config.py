@@ -1,5 +1,5 @@
 siteConfig = {
-    'siteCount': 2
+    'siteCount': 10
 }
 
 dbConfig = {
@@ -8,10 +8,14 @@ dbConfig = {
     'db'  : 'test'
 }
 
-populatorConfig = {
-    'postsCount': 60,
-    'tagsCount' : 50,
-    'batchSize' : 500
+postsPopulatorConfig = {
+    'postsCount': 60000,
+    'batchSize' : 150
+}
+
+tagsPopulatorConfig = {
+    'tagsCount': 100000,
+    'batchSize': 10000
 }
 
 postTypes = [
@@ -36,6 +40,6 @@ rankGeneratorConfig = {
 }
 
 def process():
-    populatorConfig['postsCount'] //= siteConfig['siteCount'] 
+    postsPopulatorConfig['postsCount'] //= siteConfig['siteCount'] 
 
 process()
