@@ -34,3 +34,8 @@ relationGeneratorConfig = {
 rankGeneratorConfig = {
     'batchSize': 500
 }
+
+def process():
+    populatorConfig['postsCount'] //= siteConfig['siteCount'] 
+
+process()
