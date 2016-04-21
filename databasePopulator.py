@@ -37,8 +37,7 @@ def insertPosts(postsCount):
     global postId
     postList = []
     for numberOfPosts in range(postsCount):
-        # text      = fake.text(max_nb_chars = 100000)
-        text      = 'xxyyzz'
+        text      = fake.text(max_nb_chars = 100000)
         published = fake.date_time_between(start_date = "-6y", end_date = "now")
         ES        = randint(0,1)
         US        = randint(0,1)
