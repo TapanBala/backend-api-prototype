@@ -1,18 +1,12 @@
 import pymysql.cursors
 from config import dbConfig
 
-try:
-    connection = pymysql.connect(**dbConfig)
-except Exception as err:
-    print(err)
-else:
-    print("Connection to database successful")
-
 def createTables():
     TABLES = {}
     TABLES['wp_posts'] = (
         "CREATE TABLE   `wp_posts` ("
-        "   `id`        int(11) NOT NULL AUTO_INCREMENT,"
+        "   `id`        int(11) NOT NULL,"
+        "   `site`      varchar(100) NOT NULL,"
         "   `text`      longtext NOT NULL,"
         "   `published` datetime NOT NULL,"
         "   `ES`        tinyint(1) NOT NULL,"
@@ -21,15 +15,15 @@ def createTables():
         "   `CO`        tinyint(1) NOT NULL,"
         "   `type`      varchar(100) NOT NULL,"
         "   `url`       varchar(255) NOT NULL,"
-        # " `site`      varchar(20) NOT NULL,"
         "   `special`   tinyint(1) NOT NULL,"
-        "   PRIMARY KEY (`id`)"
+        "   CONSTRAINT `compk_site2id` PRIMARY KEY (`id`, `site`)"
         ")  ENGINE = InnoDB")
     TABLES['post2tag'] = (
         "CREATE TABLE   `post2tag` ("
         "   `post_id`   int(11) NOT NULL,"
         "   `tag_id`    int(11) NOT NULL,"
-        "   CONSTRAINT compk_post2tag PRIMARY KEY (post_id,tag_id)"
+        "   `site`      varchar(100) NOT NULL,"
+        "   CONSTRAINT `compk_post2tag2site` PRIMARY KEY (`post_id`, `tag_id`, `site`)"
         ")  ENGINE = InnoDB")
     TABLES['wp_tags'] = (
         "CREATE TABLE   `wp_tags` ("
@@ -42,7 +36,8 @@ def createTables():
         "   `post_id`   int(11) NOT NULL,"
         "   `country`   varchar(3) ,"
         "   `rank`      int(11) ,"
-        "   KEY country_rank (country, rank)"
+        "   `site`      varchar(100) NOT NULL,"
+        "   KEY `country_rank2site` (`country`, `rank`, `site`)"
         ")  ENGINE = InnoDB")
     for name, dbq in TABLES.items():
         try:
@@ -53,7 +48,16 @@ def createTables():
         else:
             print("OK")
 
-cursor = connection.cursor()
-createTables()
-cursor.close()
-connection.close()
+def process():
+    global connection
+    global cursor
+    try:
+        connection = pymysql.connect(**dbConfig)
+    except Exception as err:
+        print(err)
+    else:
+        print("Connection to database successful")
+    cursor = connection.cursor()
+    createTables()
+    cursor.close()
+    connection.close()

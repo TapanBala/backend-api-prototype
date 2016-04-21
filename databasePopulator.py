@@ -18,6 +18,8 @@ def batchInsertPosts(postList):
     query = ",".join(postList)
     query = (
         "INSERT INTO `wp_posts` ("
+        "   `id`,"
+        "   `site`,"
         "   `text`,"
         "   `published`,"
         "   `ES`,"
@@ -32,9 +34,11 @@ def batchInsertPosts(postList):
     connection.commit()
 
 def insertPosts(postsCount):
+    global postId
     postList = []
     for numberOfPosts in range(postsCount):
-        text      = fake.text(max_nb_chars = 100000)
+        # text      = fake.text(max_nb_chars = 100000)
+        text      = 'xxyyzz'
         published = fake.date_time_between(start_date = "-6y", end_date = "now")
         ES        = randint(0,1)
         US        = randint(0,1)
@@ -43,8 +47,10 @@ def insertPosts(postsCount):
         postType  = postTypes[randint(0,9)]
         url       = fake.uri()
         special   = randint(0,1)
-        postList.append("('{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
+        postList.append("({}, '{}', '{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
             .format(
+                postId,
+                site,
                 text, 
                 published, 
                 ES, 
@@ -54,8 +60,9 @@ def insertPosts(postsCount):
                 postType, 
                 url, 
                 special))
+        postId = postId + 1
     batchInsertPosts(postList)
-    print("Posts Query Execution completed for {} posts".format(postsCount))
+    print("Posts Insertion completed for {} posts".format(postsCount))
 
 def insertTags(tagsCount):
     tagList = []
@@ -64,7 +71,7 @@ def insertTags(tagsCount):
         tagList.append("('{}')"
             .format(tagName))
     batchInsertTags(tagList)
-    print("Tags Query Execution completed for {} tags".format(tagsCount))
+    print("Tags Insertion completed for {} tags".format(tagsCount))
 
 def dataGenerator():
     if (config['postsCount'] < config['batchSize']) & (config['tagsCount'] < config['batchSize']):
@@ -83,12 +90,21 @@ def dataGenerator():
             insertTags(config['batchSize'])
         if remainderTagBatch > 0:
             insertTags(remainderTagBatch)
-    print("Data Populated")
     print("Total posts inserted = {}".format(config['postsCount']))
     print("Total tags inserted = {}".format(config['tagsCount']))
 
-connection = pymysql.connect(**dbConfig)
-cursor = connection.cursor()
-dataGenerator()
-cursor.close()
-connection.close()
+def process(postSite):
+    global connection
+    global cursor
+    global postId
+    global site
+    site = postSite
+    postId = 1
+    print("=====================================================")
+    print("Generating data for ---> {}".format(site))
+    connection = pymysql.connect(**dbConfig)
+    cursor = connection.cursor()
+    dataGenerator()
+    print("=====================================================")
+    cursor.close()
+    connection.close()

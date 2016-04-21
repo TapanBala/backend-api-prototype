@@ -2,10 +2,8 @@ import pymysql.cursors
 from random import randint
 from config import dbConfig, relationGeneratorConfig as config
 
-totalRelations = 0
-
 def getCounts():
-    query = "SELECT id FROM wp_posts ORDER BY id DESC LIMIT 1"
+    query = "SELECT id FROM wp_posts WHERE site = '{}' ORDER BY id DESC LIMIT 1".format(site)
     cursor.execute(query)
     config['totalPosts'] = cursor.fetchone()[0]
     query = "SELECT id FROM wp_tags ORDER BY id DESC LIMIT 1"
@@ -17,7 +15,8 @@ def batchInsertRelations(post2tagList):
     query = (
         "INSERT INTO `post2tag` ("
         "   `post_id`,"
-        "   `tag_id`"
+        "   `tag_id`,"
+        "   `site`"
         ")  VALUES  " + query)
     cursor.execute(query)
     connection.commit()
@@ -33,7 +32,7 @@ def insertRelations(startPostId, endPostId):
         endRange = tagIdRange
         for tagCounter in range(postTagCount):
             tagId = randint(startRange, endRange)
-            post2tagList.append("({}, {})".format(postId, tagId))
+            post2tagList.append("({}, {}, '{}')".format(postId, tagId, site))
             startRange = endRange + 1
             condition = endRange + (tagIdRange * 2)
             if (condition > config['totalTags']):
@@ -62,8 +61,18 @@ def createRelations():
             insertRelations(startPostId, endPostId)
     print("Relations created for total of {} posts : {}".format(config['totalPosts'], totalRelations))
 
-connection = pymysql.connect(**dbConfig)
-cursor = connection.cursor()
-createRelations()
-cursor.close()
-connection.close()
+def process(relationSite):
+    global connection
+    global cursor
+    global totalRelations
+    global site
+    site = relationSite
+    totalRelations = 0
+    print("=====================================================")
+    print("Generating Relations for ---> {}".format(site))
+    connection = pymysql.connect(**dbConfig)
+    cursor = connection.cursor()
+    createRelations()
+    print("=====================================================")
+    cursor.close()
+    connection.close()

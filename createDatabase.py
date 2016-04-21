@@ -9,12 +9,17 @@ def createDatabase(cursor):
         print("Failed creating database: {}".format(err))
         exit(1)
 
-try:
-    connection = pymysql.connect(**dbConfig)
-except Exception as err:
-    print(err)
-    connection = pymysql.connect(user = dbConfig['root'], host = dbConfig['host'])
-    cursor = connection.cursor()
-    createDatabase(cursor)
-else:
-    print("DATABASE `{}` exists".format(dbConfig['db']))
+def process():
+    global connection
+    global cursor
+    try:
+        connection = pymysql.connect(**dbConfig)
+    except Exception as err:
+        print(err)
+        connection = pymysql.connect(user = dbConfig['root'], host = dbConfig['host'])
+        cursor = connection.cursor()
+        createDatabase(cursor)
+    else:
+        print("DATABASE `{}` exists".format(dbConfig['db']))
+
+process()

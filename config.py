@@ -1,3 +1,7 @@
+siteConfig = {
+    'siteCount': 2
+}
+
 dbConfig = {
     'user': 'root',
     'host': 'localhost',

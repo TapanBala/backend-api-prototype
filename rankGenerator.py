@@ -10,15 +10,12 @@ rankConfig = {
 }
 
 def getCounts():
-    query = "SELECT id FROM wp_posts ORDER BY id DESC LIMIT 1"
+    query = "SELECT id FROM wp_posts WHERE site = '{}' ORDER BY id DESC LIMIT 1".format(site)
     cursor.execute(query)
     config['totalPosts'] = cursor.fetchone()[0]
-    query = "SELECT id FROM wp_tags ORDER BY id DESC LIMIT 1"
-    cursor.execute(query)
-    config['totalTags'] = cursor.fetchone()[0]
 
 def getPosts(limit, offset):
-    query = ("SELECT id, ES, US, MX, CO FROM wp_posts ORDER BY id ASC LIMIT {} OFFSET {}".format(limit, offset))
+    query = ("SELECT id, ES, US, MX, CO FROM wp_posts WHERE site = '{}' ORDER BY id ASC LIMIT {} OFFSET {}".format(site, limit, offset))
     cursor.execute(query)
     result = cursor.fetchall()
     return result
@@ -27,17 +24,18 @@ def batchInsertRank(rankList):
     query = ",".join(rankList)
     query = (
         "INSERT INTO posts_queue ("
-        "   post_id,"
-        "   country,"
-        "   rank    "
+        "   `post_id`,"
+        "   `country`,"
+        "   `rank`,"
+        "   `site`"
         ")  VALUES  " + query)
     cursor.execute(query)
     connection.commit()
 
 def country2rankListBuilder(rankList, postId, country):
     rankConfig[country] = rankConfig[country] + 1
-    rankList.append("({}, '{}', {})"
-        .format(postId, country, rankConfig[country]))
+    rankList.append("({}, '{}', {}, '{}')"
+        .format(postId, country, rankConfig[country], site))
     return rankList
 
 def rankListBuilder(rankList, dbData):
@@ -79,8 +77,16 @@ def rankGenerator():
     print("Total MX Ranks Generated : {}".format(rankConfig['MX']))
     print("Total CO Ranks Generated : {}".format(rankConfig['CO']))
 
-connection = pymysql.connect(**dbConfig)
-cursor = connection.cursor()
-rankGenerator()
-cursor.close()
-connection.close()
+def process(rankSite):
+    global connection
+    global cursor
+    global site
+    site = rankSite
+    print("=====================================================")
+    print("Generating ranks for ---> {}".format(site))
+    connection = pymysql.connect(**dbConfig)
+    cursor = connection.cursor()
+    rankGenerator()
+    print("=====================================================")
+    cursor.close()
+    connection.close()
