@@ -1,7 +1,7 @@
 import pymysql.cursors
 from random import randint
 from faker import Faker
-from config import dbConfig, postTypes, populatorConfig as config
+from config import dbConfig, postTypes, populatorConfig
 
 def batchInsertTags(tagList):
     query = ",".join(tagList)
@@ -70,25 +70,25 @@ def insertTags(tagsCount):
     batchInsertTags(tagList)
     print("Tags Insertion completed for {} tags".format(tagsCount))
 
-def dataGenerator():
-    if (config['postsCount'] < config['batchSize']) & (config['tagsCount'] < config['batchSize']):
-        insertPosts(config['postsCount'])
-        insertTags(config['tagsCount'])
+def generateData():
+    if (populatorConfig['postsCount'] < populatorConfig['batchSize']) & (populatorConfig['tagsCount'] < populatorConfig['batchSize']):
+        insertPosts(populatorConfig['postsCount'])
+        insertTags(populatorConfig['tagsCount'])
     else:
-        postBatchCount = config['postsCount'] // config['batchSize']
-        remainderPostBatch = config['postsCount'] % config['batchSize']
-        tagBatchCount = config['tagsCount'] // config['batchSize']
-        remainderTagBatch = config['tagsCount'] % config['batchSize']
+        postBatchCount = populatorConfig['postsCount'] // populatorConfig['batchSize']
+        remainderPostBatch = populatorConfig['postsCount'] % populatorConfig['batchSize']
+        tagBatchCount = populatorConfig['tagsCount'] // populatorConfig['batchSize']
+        remainderTagBatch = populatorConfig['tagsCount'] % populatorConfig['batchSize']
         for count in range(postBatchCount):
-            insertPosts(config['batchSize'])
+            insertPosts(populatorConfig['batchSize'])
         if remainderPostBatch > 0:
             insertPosts(remainderPostBatch)
         for count in range(tagBatchCount):
-            insertTags(config['batchSize'])
+            insertTags(populatorConfig['batchSize'])
         if remainderTagBatch > 0:
             insertTags(remainderTagBatch)
-    print("Total posts inserted = {}".format(config['postsCount']))
-    print("Total tags inserted = {}".format(config['tagsCount']))
+    print("Total posts inserted = {}".format(populatorConfig['postsCount']))
+    print("Total tags inserted = {}".format(populatorConfig['tagsCount']))
 
 def process(postSite):
     global connection, cursor, fake
@@ -100,7 +100,7 @@ def process(postSite):
     site = postSite
     print("=====================================================")
     print("Generating data for ---> {}".format(site))
-    dataGenerator()
+    generateData()
     print("=====================================================")
     cursor.close()
     connection.close()

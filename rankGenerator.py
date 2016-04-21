@@ -9,13 +9,13 @@ rankConfig = {
     'CO': 0
 }
 
-def getCounts():
+def getPostCount():
     query = "SELECT id FROM wp_posts WHERE site = '{}' ORDER BY id DESC LIMIT 1".format(site)
     cursor.execute(query)
     config['totalPosts'] = cursor.fetchone()[0]
 
 def getPosts(limit, offset):
-    query = ("SELECT id, ES, US, MX, CO FROM wp_posts WHERE site = '{}' ORDER BY id ASC LIMIT {} OFFSET {}".format(site, limit, offset))
+    query = ("SELECT id, ES, US, MX, CO FROM wp_posts WHERE site = '{}', id > {} ORDER BY id ASC LIMIT {}".format(site, offset, limit))
     cursor.execute(query)
     result = cursor.fetchall()
     return result
@@ -32,32 +32,32 @@ def batchInsertRank(rankList):
     cursor.execute(query)
     connection.commit()
 
-def country2rankListBuilder(rankList, postId, country):
+def createCountryRankList(rankList, postId, country):
     rankConfig[country] += 1
     rankList.append("({}, '{}', {}, '{}')"
         .format(postId, country, rankConfig[country], site))
     return rankList
 
-def rankListBuilder(rankList, dbData):
+def createRankList(rankList, dbData):
     if dbData[1] == 1:
-        rankList = country2rankListBuilder(rankList, dbData[0], 'ES')
+        rankList = createCountryRankList(rankList, dbData[0], 'ES')
     if dbData[2] == 1:
-        rankList = country2rankListBuilder(rankList, dbData[0], 'US')
+        rankList = createCountryRankList(rankList, dbData[0], 'US')
     if dbData[3] == 1:
-        rankList = country2rankListBuilder(rankList, dbData[0], 'MX')
+        rankList = createCountryRankList(rankList, dbData[0], 'MX')
     if dbData[4] == 1:
-        rankList = country2rankListBuilder(rankList, dbData[0], 'CO')
+        rankList = createCountryRankList(rankList, dbData[0], 'CO')
     return rankList
 
 def insertRank(limit, offset):
     rankList = []
     dbData = getPosts(limit, offset)
     for data in range(limit):
-        rankList = rankListBuilder(rankList, dbData[data])
+        rankList = createRankList(rankList, dbData[data])
     batchInsertRank(rankList)
 
 def rankGenerator():
-    getCounts()
+    getPostCount()
     offset = 0
     limit = config['totalPosts']
     if (config['totalPosts'] < config['batchSize']):

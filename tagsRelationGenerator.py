@@ -1,14 +1,14 @@
 import pymysql.cursors
 from random import randint
-from config import dbConfig, relationGeneratorConfig as config
+from config import dbConfig, relationGeneratorConfig
 
-def getCounts():
+def getCount():
     query = "SELECT id FROM wp_posts WHERE site = '{}' ORDER BY id DESC LIMIT 1".format(site)
     cursor.execute(query)
-    config['totalPosts'] = cursor.fetchone()[0]
+    relationGeneratorConfig['totalPosts'] = cursor.fetchone()[0]
     query = "SELECT id FROM wp_tags ORDER BY id DESC LIMIT 1"
     cursor.execute(query)
-    config['totalTags'] = cursor.fetchone()[0]
+    relationGeneratorConfig['totalTags'] = cursor.fetchone()[0]
 
 def batchInsertRelations(post2tagList):
     query = ",".join(post2tagList)
@@ -27,7 +27,7 @@ def insertRelations(startPostId, endPostId):
     for postId in range(startPostId, (endPostId + 1)):
         postTagCount = randint(3,5)
         totalRelations += postTagCount
-        tagIdRange = config['totalTags'] // postTagCount
+        tagIdRange = relationGeneratorConfig['totalTags'] // postTagCount
         startRange = 1
         endRange = tagIdRange
         for tagCounter in range(postTagCount):
@@ -35,31 +35,31 @@ def insertRelations(startPostId, endPostId):
             post2tagList.append("({}, {}, '{}')".format(postId, tagId, site))
             startRange = endRange + 1
             condition = endRange + (tagIdRange * 2)
-            if (condition > config['totalTags']):
-                endRange = config['totalTags']
+            if (condition > relationGeneratorConfig['totalTags']):
+                endRange = relationGeneratorConfig['totalTags']
             else:
                 endRange += tagIdRange
     batchInsertRelations(post2tagList)
     print("Tag relations created for {} posts : {}".format(postId, totalRelations))
 
 def createRelations():
-    getCounts()
+    getCount()
     startPostId = 1
-    endPostId = config['totalPosts']
-    if (config['totalPosts'] < config['batchSize']):
+    endPostId = relationGeneratorConfig['totalPosts']
+    if (relationGeneratorConfig['totalPosts'] < relationGeneratorConfig['batchSize']):
         insertRelations(startPostId, endPostId)
     else:
-        batchCount = config['totalPosts'] // config['batchSize']
-        remainderBatch = config['totalPosts'] % config['batchSize']
-        endPostId = config['batchSize']
+        batchCount = relationGeneratorConfig['totalPosts'] // relationGeneratorConfig['batchSize']
+        remainderBatch = relationGeneratorConfig['totalPosts'] % relationGeneratorConfig['batchSize']
+        endPostId = relationGeneratorConfig['batchSize']
         for count in range(batchCount):
             insertRelations(startPostId, endPostId)
             startPostId = endPostId + 1
-            endPostId += config['batchSize']
+            endPostId += relationGeneratorConfig['batchSize']
         if remainderBatch > 0:
             endPostId = startPostId + remainderBatch - 1
             insertRelations(startPostId, endPostId)
-    print("Relations created for total of {} posts : {}".format(config['totalPosts'], totalRelations))
+    print("Relations created for total of {} posts : {}".format(relationGeneratorConfig['totalPosts'], totalRelations))
 
 def process(relationSite):
     global connection, cursor

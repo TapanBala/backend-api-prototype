@@ -37,7 +37,7 @@ def createTables():
         "   `country`   varchar(3) ,"
         "   `rank`      int(11) ,"
         "   `site`      varchar(100) NOT NULL,"
-        "   KEY `country_rank2site` (`country`, `rank`, `site`)"
+        "   CONSTRAINT `compk_country2rank2site` (`country`, `rank`, `site`)"
         ")  ENGINE = InnoDB")
     for name, dbq in TABLES.items():
         try:
