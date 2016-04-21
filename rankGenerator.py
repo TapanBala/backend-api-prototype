@@ -1,6 +1,6 @@
 import pymysql.cursors
 from random import randint
-from config import dbConfig, rankGeneratorConfig as config
+from config import dbConfig, rankGeneratorConfig
 
 rankConfig = {
     'ES': 0,
@@ -12,7 +12,7 @@ rankConfig = {
 def getPostCount():
     query = "SELECT id FROM wp_posts WHERE site = '{}' ORDER BY id DESC LIMIT 1".format(site)
     cursor.execute(query)
-    config['totalPosts'] = cursor.fetchone()[0]
+    rankGeneratorConfig['totalPosts'] = cursor.fetchone()[0]
 
 def getPosts(limit, offset):
     query = ("SELECT id, ES, US, MX, CO FROM wp_posts WHERE site = '{}', id > {} ORDER BY id ASC LIMIT {}".format(site, offset, limit))
@@ -20,8 +20,8 @@ def getPosts(limit, offset):
     result = cursor.fetchall()
     return result
 
-def batchInsertRank(rankList):
-    query = ",".join(rankList)
+def batchInsertRank(ranks):
+    query = ",".join(ranks)
     query = (
         "INSERT INTO posts_queue ("
         "   `post_id`,"
@@ -32,43 +32,43 @@ def batchInsertRank(rankList):
     cursor.execute(query)
     connection.commit()
 
-def createCountryRankList(rankList, postId, country):
+def createCountryRankList(ranks, postId, country):
     rankConfig[country] += 1
-    rankList.append("({}, '{}', {}, '{}')"
+    ranks.append("({}, '{}', {}, '{}')"
         .format(postId, country, rankConfig[country], site))
-    return rankList
+    return ranks
 
-def createRankList(rankList, dbData):
+def createRankList(ranks, dbData):
     if dbData[1] == 1:
-        rankList = createCountryRankList(rankList, dbData[0], 'ES')
+        ranks = createCountryRankList(ranks, dbData[0], 'ES')
     if dbData[2] == 1:
-        rankList = createCountryRankList(rankList, dbData[0], 'US')
+        ranks = createCountryRankList(ranks, dbData[0], 'US')
     if dbData[3] == 1:
-        rankList = createCountryRankList(rankList, dbData[0], 'MX')
+        ranks = createCountryRankList(ranks, dbData[0], 'MX')
     if dbData[4] == 1:
-        rankList = createCountryRankList(rankList, dbData[0], 'CO')
-    return rankList
+        ranks = createCountryRankList(ranks, dbData[0], 'CO')
+    return ranks
 
 def insertRank(limit, offset):
-    rankList = []
+    ranks = []
     dbData = getPosts(limit, offset)
     for data in range(limit):
-        rankList = createRankList(rankList, dbData[data])
-    batchInsertRank(rankList)
+        ranks = createRankList(ranks, dbData[data])
+    batchInsertRank(ranks)
 
 def rankGenerator():
     getPostCount()
     offset = 0
-    limit = config['totalPosts']
-    if (config['totalPosts'] < config['batchSize']):
+    limit = rankGeneratorConfig['totalPosts']
+    if (rankGeneratorConfig['totalPosts'] < rankGeneratorConfig['batchSize']):
         insertRank(limit, offset)
     else:
-        batchCount = config['totalPosts'] // config['batchSize']
-        remainderBatch = config['totalPosts'] % config['batchSize']
-        limit = config['batchSize']
+        batchCount = rankGeneratorConfig['totalPosts'] // rankGeneratorConfig['batchSize']
+        remainderBatch = rankGeneratorConfig['totalPosts'] % rankGeneratorConfig['batchSize']
+        limit = rankGeneratorConfig['batchSize']
         for count in range(batchCount):
             insertRank(limit, offset)
-            offset = (count + 1) * config['batchSize']
+            offset = (count + 1) * rankGeneratorConfig['batchSize']
         if remainderBatch > 0:
             limit = remainderBatch
             insertRank(limit, offset)

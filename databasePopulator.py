@@ -3,8 +3,8 @@ from random import randint
 from faker import Faker
 from config import dbConfig, postTypes, populatorConfig
 
-def batchInsertTags(tagList):
-    query = ",".join(tagList)
+def batchInsertTags(tags):
+    query = ",".join(tags)
     query = (
         "INSERT INTO `wp_tags` ("
         "   `name` "
@@ -12,8 +12,8 @@ def batchInsertTags(tagList):
     cursor.execute(query)
     connection.commit()
 
-def batchInsertPosts(postList):
-    query = ",".join(postList)
+def batchInsertPosts(posts):
+    query = ",".join(posts)
     query = (
         "INSERT INTO `wp_posts` ("
         "   `id`,"
@@ -33,7 +33,7 @@ def batchInsertPosts(postList):
 
 def insertPosts(postsCount):
     global postId
-    postList = []
+    posts = []
     for numberOfPosts in range(postsCount):
         text      = fake.text(max_nb_chars = 100000)
         published = fake.date_time_between(start_date = "-6y", end_date = "now")
@@ -44,7 +44,7 @@ def insertPosts(postsCount):
         postType  = postTypes[randint(0,9)]
         url       = fake.uri()
         special   = randint(0,1)
-        postList.append("({}, '{}', '{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
+        posts.append("({}, '{}', '{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
             .format(
                 postId,
                 site,
@@ -58,16 +58,16 @@ def insertPosts(postsCount):
                 url, 
                 special))
         postId = postId + 1
-    batchInsertPosts(postList)
+    batchInsertPosts(posts)
     print("Posts Insertion completed for {} posts".format(postsCount))
 
 def insertTags(tagsCount):
-    tagList = []
+    tags = []
     for numberOfTags in range(tagsCount):
         tagName   = fake.pystr(max_chars = 20)
-        tagList.append("('{}')"
+        tags.append("('{}')"
             .format(tagName))
-    batchInsertTags(tagList)
+    batchInsertTags(tags)
     print("Tags Insertion completed for {} tags".format(tagsCount))
 
 def generateData():

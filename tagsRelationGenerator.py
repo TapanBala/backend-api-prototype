@@ -10,8 +10,8 @@ def getCount():
     cursor.execute(query)
     relationGeneratorConfig['totalTags'] = cursor.fetchone()[0]
 
-def batchInsertRelations(post2tagList):
-    query = ",".join(post2tagList)
+def batchInsertRelations(relations):
+    query = ",".join(relations)
     query = (
         "INSERT INTO `post2tag` ("
         "   `post_id`,"
@@ -22,7 +22,7 @@ def batchInsertRelations(post2tagList):
     connection.commit()
 
 def insertRelations(startPostId, endPostId):
-    post2tagList = []
+    relations = []
     global totalRelations
     for postId in range(startPostId, (endPostId + 1)):
         postTagCount = randint(3,5)
@@ -32,14 +32,14 @@ def insertRelations(startPostId, endPostId):
         endRange = tagIdRange
         for tagCounter in range(postTagCount):
             tagId = randint(startRange, endRange)
-            post2tagList.append("({}, {}, '{}')".format(postId, tagId, site))
+            relations.append("({}, {}, '{}')".format(postId, tagId, site))
             startRange = endRange + 1
             condition = endRange + (tagIdRange * 2)
             if (condition > relationGeneratorConfig['totalTags']):
                 endRange = relationGeneratorConfig['totalTags']
             else:
                 endRange += tagIdRange
-    batchInsertRelations(post2tagList)
+    batchInsertRelations(relations)
     print("Tag relations created for {} posts : {}".format(postId, totalRelations))
 
 def createRelations():
