@@ -3,8 +3,6 @@ from random import randint
 from faker import Faker
 from config import dbConfig, postTypes, populatorConfig as config
 
-fake = Faker()
-
 def batchInsertTags(tagList):
     query = ",".join(tagList)
     query = (
@@ -74,8 +72,8 @@ def insertTags(tagsCount):
 
 def dataGenerator():
     if (config['postsCount'] < config['batchSize']) & (config['tagsCount'] < config['batchSize']):
-        insertTags(config['tagsCount'])
         insertPosts(config['postsCount'])
+        insertTags(config['tagsCount'])
     else:
         postBatchCount = config['postsCount'] // config['batchSize']
         remainderPostBatch = config['postsCount'] % config['batchSize']
@@ -93,16 +91,15 @@ def dataGenerator():
     print("Total tags inserted = {}".format(config['tagsCount']))
 
 def process(postSite):
-    global connection
-    global cursor
-    global postId
-    global site
-    site = postSite
-    postId = 1
-    print("=====================================================")
-    print("Generating data for ---> {}".format(site))
+    global connection, cursor, fake
+    global postId, site
     connection = pymysql.connect(**dbConfig)
     cursor = connection.cursor()
+    fake = Faker()
+    postId = 1
+    site = postSite
+    print("=====================================================")
+    print("Generating data for ---> {}".format(site))
     dataGenerator()
     print("=====================================================")
     cursor.close()

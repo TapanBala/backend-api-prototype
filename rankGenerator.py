@@ -33,7 +33,7 @@ def batchInsertRank(rankList):
     connection.commit()
 
 def country2rankListBuilder(rankList, postId, country):
-    rankConfig[country] = rankConfig[country] + 1
+    rankConfig[country] += 1
     rankList.append("({}, '{}', {}, '{}')"
         .format(postId, country, rankConfig[country], site))
     return rankList
@@ -78,14 +78,13 @@ def rankGenerator():
     print("Total CO Ranks Generated : {}".format(rankConfig['CO']))
 
 def process(rankSite):
-    global connection
-    global cursor
+    global connection, cursor
     global site
+    connection = pymysql.connect(**dbConfig)
+    cursor = connection.cursor()
     site = rankSite
     print("=====================================================")
     print("Generating ranks for ---> {}".format(site))
-    connection = pymysql.connect(**dbConfig)
-    cursor = connection.cursor()
     rankGenerator()
     print("=====================================================")
     cursor.close()

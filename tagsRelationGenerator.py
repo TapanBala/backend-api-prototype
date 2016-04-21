@@ -24,9 +24,9 @@ def batchInsertRelations(post2tagList):
 def insertRelations(startPostId, endPostId):
     post2tagList = []
     global totalRelations
-    for postId in range(startPostId, (endPostId+1)):
+    for postId in range(startPostId, (endPostId + 1)):
         postTagCount = randint(3,5)
-        totalRelations = totalRelations + postTagCount
+        totalRelations += postTagCount
         tagIdRange = config['totalTags'] // postTagCount
         startRange = 1
         endRange = tagIdRange
@@ -38,7 +38,7 @@ def insertRelations(startPostId, endPostId):
             if (condition > config['totalTags']):
                 endRange = config['totalTags']
             else:
-                endRange = endRange + tagIdRange
+                endRange += tagIdRange
     batchInsertRelations(post2tagList)
     print("Tag relations created for {} posts : {}".format(postId, totalRelations))
 
@@ -55,23 +55,21 @@ def createRelations():
         for count in range(batchCount):
             insertRelations(startPostId, endPostId)
             startPostId = endPostId + 1
-            endPostId = endPostId + config['batchSize']
+            endPostId += config['batchSize']
         if remainderBatch > 0:
             endPostId = startPostId + remainderBatch - 1
             insertRelations(startPostId, endPostId)
     print("Relations created for total of {} posts : {}".format(config['totalPosts'], totalRelations))
 
 def process(relationSite):
-    global connection
-    global cursor
-    global totalRelations
-    global site
-    site = relationSite
-    totalRelations = 0
-    print("=====================================================")
-    print("Generating Relations for ---> {}".format(site))
+    global connection, cursor
+    global totalRelations, site
     connection = pymysql.connect(**dbConfig)
     cursor = connection.cursor()
+    totalRelations = 0
+    site = relationSite
+    print("=====================================================")
+    print("Generating Relations for ---> {}".format(site))
     createRelations()
     print("=====================================================")
     cursor.close()

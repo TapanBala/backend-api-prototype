@@ -9,8 +9,8 @@ dbConfig = {
 }
 
 populatorConfig = {
-    'postsCount': 6000,
-    'tagsCount' : 5500,
+    'postsCount': 60,
+    'tagsCount' : 50,
     'batchSize' : 500
 }
 

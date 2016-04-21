@@ -49,8 +49,7 @@ def createTables():
             print("OK")
 
 def process():
-    global connection
-    global cursor
+    global connection, cursor
     try:
         connection = pymysql.connect(**dbConfig)
     except Exception as err:
