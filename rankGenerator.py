@@ -50,7 +50,6 @@ def insertRank(limit, offset):
     batchInsertRank(ranks)
 
 def rankGenerator():
-    print(rankConfig)
     getPostCount()
     offset = 0
     limit = rankGeneratorConfig['totalPosts']
