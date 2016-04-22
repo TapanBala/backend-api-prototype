@@ -1,7 +1,7 @@
 import pymysql.cursors
 from random import randint
 from faker import Faker
-from config import dbConfig, postTypes, postsPopulatorConfig
+from config import dbConfig, postTypes, postsPopulatorConfig, fakeText
 
 def batchInsertPosts(posts):
     query = ",".join(posts)
@@ -25,8 +25,10 @@ def batchInsertPosts(posts):
 def insertPosts(postsCount):
     global postId
     posts = []
+    fakeTextStart = randint(0,900000)
+    fakeTextEnd   = fakeTextStart + 100000
     for numberOfPosts in range(postsCount):
-        text      = fake.text(max_nb_chars = 100000)
+        text      = fakeText[fakeTextStart:fakeTextEnd]
         published = fake.date_time_between(start_date = "-6y", end_date = "now")
         ES        = randint(0,1)
         US        = randint(0,1)

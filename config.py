@@ -1,3 +1,5 @@
+from faker import Faker
+fake = Faker()
 siteConfig = {
     'siteCount': 10
 }
@@ -9,13 +11,13 @@ dbConfig = {
 }
 
 postsPopulatorConfig = {
-    'postsCount': 60000,
-    'batchSize' : 150
+    'postsCount': 6000,
+    'batchSize' : 500
 }
 
 tagsPopulatorConfig = {
-    'tagsCount': 100000,
-    'batchSize': 10000
+    'tagsCount': 10000,
+    'batchSize': 1000
 }
 
 postTypes = [
@@ -39,7 +41,11 @@ rankGeneratorConfig = {
     'batchSize': 500
 }
 
+fakeText = ""
+
 def process():
+    global fakeText
     postsPopulatorConfig['postsCount'] //= siteConfig['siteCount'] 
+    fakeText = fake.text(max_nb_chars = 1000000)
 
 process()

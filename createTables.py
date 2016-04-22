@@ -15,15 +15,13 @@ def createTables():
         "   `CO`        tinyint(1) NOT NULL,"
         "   `type`      varchar(100) NOT NULL,"
         "   `url`       varchar(255) NOT NULL,"
-        "   `special`   tinyint(1) NOT NULL,"
-        "   CONSTRAINT `compk_site2id` PRIMARY KEY (`id`, `site`)"
+        "   `special`   tinyint(1) NOT NULL"
         ")  ENGINE = InnoDB")
     TABLES['post2tag'] = (
         "CREATE TABLE   `post2tag` ("
         "   `post_id`   int(11) NOT NULL,"
         "   `tag_id`    int(11) NOT NULL,"
-        "   `site`      varchar(100) NOT NULL,"
-        "   CONSTRAINT `compk_post2tag2site` PRIMARY KEY (`post_id`, `tag_id`, `site`)"
+        "   `site`      varchar(100) NOT NULL"
         ")  ENGINE = InnoDB")
     TABLES['wp_tags'] = (
         "CREATE TABLE   `wp_tags` ("
@@ -36,8 +34,7 @@ def createTables():
         "   `post_id`   int(11) NOT NULL,"
         "   `country`   varchar(3) ,"
         "   `rank`      int(11) ,"
-        "   `site`      varchar(100) NOT NULL,"
-        "   CONSTRAINT `compk_country2rank2site` PRIMARY KEY (`country`, `rank`, `site`)"
+        "   `site`      varchar(100) NOT NULL"
         ")  ENGINE = InnoDB")
     for name, dbq in TABLES.items():
         try:
