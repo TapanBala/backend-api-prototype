@@ -2,13 +2,6 @@ import pymysql.cursors
 from random import randint
 from config import dbConfig, rankGeneratorConfig
 
-rankConfig = {
-    'ES': 0,
-    'US': 0,
-    'MX': 0,
-    'CO': 0
-}
-
 def getPostCount():
     query = "SELECT id FROM wp_posts WHERE site = '{}' ORDER BY id DESC LIMIT 1".format(site)
     cursor.execute(query)
@@ -57,6 +50,7 @@ def insertRank(limit, offset):
     batchInsertRank(ranks)
 
 def rankGenerator():
+    print(rankConfig)
     getPostCount()
     offset = 0
     limit = rankGeneratorConfig['totalPosts']
@@ -72,14 +66,20 @@ def rankGenerator():
         if remainderBatch > 0:
             limit = remainderBatch
             insertRank(limit, offset)
-    print("Total ES Ranks Generated : {}".format(rankConfig['ES']))
-    print("Total US Ranks Generated : {}".format(rankConfig['US']))
-    print("Total MX Ranks Generated : {}".format(rankConfig['MX']))
-    print("Total CO Ranks Generated : {}".format(rankConfig['CO']))
+    print("ES Ranks Generated : {}".format(rankConfig['ES']))
+    print("US Ranks Generated : {}".format(rankConfig['US']))
+    print("MX Ranks Generated : {}".format(rankConfig['MX']))
+    print("CO Ranks Generated : {}".format(rankConfig['CO']))
 
 def process(rankSite):
     global connection, cursor
-    global site
+    global site, rankConfig
+    rankConfig = {
+        'ES': 0,
+        'US': 0,
+        'MX': 0,
+        'CO': 0
+    }
     connection = pymysql.connect(**dbConfig)
     cursor = connection.cursor()
     site = rankSite
