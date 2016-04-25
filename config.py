@@ -11,13 +11,13 @@ dbConfig = {
 }
 
 postsPopulatorConfig = {
-    'postsCount': 6000,
-    'batchSize' : 500
+    'postsCount': 60000,
+    'batchSize' : 5000
 }
 
 tagsPopulatorConfig = {
-    'tagsCount': 10000,
-    'batchSize': 1000
+    'tagsCount': 100000,
+    'batchSize': 10000
 }
 
 postTypes = [
@@ -34,11 +34,11 @@ postTypes = [
 ]
 
 relationGeneratorConfig = {
-    'batchSize': 500
+    'batchSize': 5000
 }
 
 rankGeneratorConfig = {
-    'batchSize': 500
+    'batchSize': 5000
 }
 
 fakeText = ""
