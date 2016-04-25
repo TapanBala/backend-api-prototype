@@ -25,9 +25,9 @@ def batchInsertPosts(posts):
 def insertPosts(postsCount):
     global postId
     posts = []
-    fakeTextStart = randint(0,999000)
-    fakeTextEnd   = fakeTextStart + 1000
     for numberOfPosts in range(postsCount):
+        fakeTextStart = randint(0,997000)
+        fakeTextEnd   = fakeTextStart + 3000
         text      = fakeText[fakeTextStart:fakeTextEnd]
         published = fake.date_time_between(start_date = "-6y", end_date = "now")
         ES        = randint(0,1)
