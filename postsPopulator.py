@@ -1,13 +1,12 @@
 import pymysql.cursors
 from random import randint
 from faker import Faker
-from config import dbConfig, postTypes, postsPopulatorConfig, fakeText
+from config import dbConfig, postTypeChoice, postsPopulatorConfig, fakeText, countryChoice, specialChoice
 
 def batchInsertPosts(posts):
     query = ",".join(posts)
     query = (
         "INSERT INTO `wp_posts` ("
-        "   `id`,"
         "   `site`,"
         "   `text`,"
         "   `published`,"
@@ -22,24 +21,24 @@ def batchInsertPosts(posts):
     cursor.execute(query)
     connection.commit()
 
-def insertPosts(postsCount):
-    global postId
+def insertPosts():
     posts = []
-    for numberOfPosts in range(postsCount):
+    countriesWeighted = 0
+    for numberOfPosts in range(postsPopulatorConfig['postsCount']):
         fakeTextStart = randint(0,997000)
         fakeTextEnd   = fakeTextStart + 3000
         text      = fakeText[fakeTextStart:fakeTextEnd]
         published = fake.date_time_between(start_date = "-6y", end_date = "now")
-        ES        = randint(0,1)
-        US        = randint(0,1)
-        MX        = randint(0,1)
-        CO        = randint(0,1)
-        postType  = postTypes[randint(0,9)]
+        countriesWeighted = countryChoice(countriesWeighted)
+        ES        = countriesWeighted[0]
+        US        = countriesWeighted[1]
+        MX        = countriesWeighted[2]
+        CO        = countriesWeighted[3]
+        postType  = postTypeChoice()
         url       = fake.uri()
-        special   = randint(0,1)
-        posts.append("({}, '{}', '{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
+        special   = specialChoice()
+        posts.append("('{}', '{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
             .format(
-                postId,
                 site,
                 text, 
                 published, 
@@ -50,33 +49,24 @@ def insertPosts(postsCount):
                 postType, 
                 url, 
                 special))
-        postId = postId + 1
-    batchInsertPosts(posts)
-    print("Posts Insertion completed for {} posts".format(postsCount))
-
-def generateData():
-    if (postsPopulatorConfig['postsCount'] < postsPopulatorConfig['batchSize']):
-        insertPosts(postsPopulatorConfig['postsCount'])
-    else:
-        postBatchCount = postsPopulatorConfig['postsCount'] // postsPopulatorConfig['batchSize']
-        remainderPostBatch = postsPopulatorConfig['postsCount'] % postsPopulatorConfig['batchSize']
-        for count in range(postBatchCount):
-            insertPosts(postsPopulatorConfig['batchSize'])
-        if remainderPostBatch > 0:
-            insertPosts(remainderPostBatch)
-    print("Total posts inserted = {}".format(postsPopulatorConfig['postsCount']))
+        if (numberOfPosts % postsPopulatorConfig['batchSize']) == 0:
+            batchInsertPosts(posts)
+            posts = []
+            print("Posts created : {}".format(postsPopulatorConfig['batchSize']))
+    if posts != []:
+        batchInsertPosts(posts)
+    print("Posts Insertion completed for {} posts".format(numberOfPosts + 1))
 
 def process(postSite):
     global connection, cursor, fake
-    global postId, site
+    global site
     connection = pymysql.connect(**dbConfig)
     cursor = connection.cursor()
     fake = Faker()
-    postId = 1
     site = postSite
     print("=====================================================")
     print("Generating Post data for ---> {}".format(site))
-    generateData()
+    insertPosts()
     print("=====================================================")
     cursor.close()
     connection.close()

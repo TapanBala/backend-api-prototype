@@ -1,7 +1,7 @@
 import pymysql.cursors
 from random import randint
 from faker import Faker
-from config import dbConfig, postTypes, tagsPopulatorConfig
+from config import dbConfig, tagsPopulatorConfig
 
 def batchInsertTags(tags):
     query = ",".join(tags)
@@ -12,26 +12,19 @@ def batchInsertTags(tags):
     cursor.execute(query)
     connection.commit()
 
-def insertTags(tagsCount):
+def insertTags():
     tags = []
-    for numberOfTags in range(tagsCount):
+    for numberOfTags in range(tagsPopulatorConfig['tagsCount']):
         tagName   = fake.pystr(max_chars = 20)
         tags.append("('{}')"
             .format(tagName))
-    batchInsertTags(tags)
-    print("Tags Insertion completed for {} tags".format(tagsCount))
-
-def generateData():
-    if (tagsPopulatorConfig['tagsCount'] < tagsPopulatorConfig['batchSize']):
-        insertTags(tagsPopulatorConfig['tagsCount'])
-    else:
-        tagBatchCount = tagsPopulatorConfig['tagsCount'] // tagsPopulatorConfig['batchSize']
-        remainderTagBatch = tagsPopulatorConfig['tagsCount'] % tagsPopulatorConfig['batchSize']
-        for count in range(tagBatchCount):
-            insertTags(tagsPopulatorConfig['batchSize'])
-        if remainderTagBatch > 0:
-            insertTags(remainderTagBatch)
-    print("Total tags inserted = {}".format(tagsPopulatorConfig['tagsCount']))
+        if (numberOfTags % tagsPopulatorConfig['batchSize']) == 0:
+            batchInsertTags(tags)
+            tags = []
+            print("Tags created : {}".format(tagsPopulatorConfig['batchSize']))
+    if tags != []:
+        batchInsertTags(tags)
+    print("Tags Insertion completed for {} tags".format(numberOfTags + 1))
 
 def process():
     global connection, cursor, fake
@@ -40,7 +33,7 @@ def process():
     fake = Faker()
     print("=====================================================")
     print("Generating Tags data")
-    generateData()
+    insertTags()
     print("=====================================================")
     cursor.close()
     connection.close()
