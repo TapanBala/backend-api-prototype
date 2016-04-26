@@ -14,7 +14,7 @@ def batchInsertTags(tags):
 
 def insertTags():
     tags = []
-    for numberOfTags in range(tagsPopulatorConfig['tagsCount']):
+    for numberOfTags in range(1, (tagsPopulatorConfig['tagsCount'] + 1)):
         tagName   = fake.pystr(max_chars = 20)
         tags.append("('{}')"
             .format(tagName))
@@ -24,7 +24,8 @@ def insertTags():
             print("Tags created : {}".format(tagsPopulatorConfig['batchSize']))
     if tags != []:
         batchInsertTags(tags)
-    print("Tags Insertion completed for {} tags".format(numberOfTags + 1))
+        print("Tags created : {}".format(numberOfTags % tagsPopulatorConfig['batchSize']))
+    print("Tags Insertion completed for {} tags".format(numberOfTags))
 
 def process():
     global connection, cursor, fake

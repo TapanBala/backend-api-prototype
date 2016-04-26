@@ -24,7 +24,7 @@ def batchInsertPosts(posts):
 def insertPosts():
     posts = []
     countriesWeighted = 0
-    for numberOfPosts in range(postsPopulatorConfig['postsCount']):
+    for numberOfPosts in range(1, (postsPopulatorConfig['postsCount'] + 1)):
         fakeTextStart = randint(0,997000)
         fakeTextEnd   = fakeTextStart + 3000
         text      = fakeText[fakeTextStart:fakeTextEnd]
@@ -55,7 +55,8 @@ def insertPosts():
             print("Posts created : {}".format(postsPopulatorConfig['batchSize']))
     if posts != []:
         batchInsertPosts(posts)
-    print("Posts Insertion completed for {} posts".format(numberOfPosts + 1))
+        print("Posts created : {}".format(numberOfPosts % postsPopulatorConfig['batchSize']))
+    print("Posts Insertion completed for {} posts".format(numberOfPosts))
 
 def process(postSite):
     global connection, cursor, fake

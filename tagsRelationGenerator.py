@@ -23,9 +23,10 @@ def batchInsertRelations(relations):
 def insertRelations():
     relations = []
     totalRelations = 0
+    batchRelations = 0
     for postId in range(1, (relationGeneratorConfig['totalPosts'] + 1)):
         postTagCount = randint(3, 5)
-        totalRelations += postTagCount
+        batchRelations += postTagCount
         tagIdRange = relationGeneratorConfig['totalTags'] // postTagCount
         startRange = 1
         endRange = tagIdRange
@@ -40,9 +41,12 @@ def insertRelations():
                 endRange += tagIdRange
         if(postId % relationGeneratorConfig['batchSize']) == 0:
             batchInsertRelations(relations)
+            print("Tag relations generated : {}".format(batchRelations))
             relations = []
-            print("Tag relations generated : {}".format(relationGeneratorConfig['batchSize']))
+            totalRelations += batchRelations
+            batchRelations = 0
     if relations != []:
+        totalRelations += batchRelations
         batchInsertRelations(relations)
     print("Tag relations created for {} posts : {}".format(postId, totalRelations))
 
