@@ -8,7 +8,8 @@ def createTables():
         "   `id`        int(11) NOT NULL AUTO_INCREMENT,"
         "   `site`      varchar(100) NOT NULL,"
         "   `text`      longtext NOT NULL,"
-        "   `published` datetime NOT NULL,"
+        # "   `published` timestamp NOT NULL,"
+        "   `published` int(11) NOT NULL,"
         "   `ES`        tinyint(1) NOT NULL,"
         "   `US`        tinyint(1) NOT NULL,"
         "   `MX`        tinyint(1) NOT NULL,"
@@ -17,20 +18,19 @@ def createTables():
         "   `url`       varchar(255) NOT NULL,"
         "   `special`   tinyint(1) NOT NULL,"
         "   PRIMARY KEY (`id`)"
-        ")  ENGINE = InnoDB")
+        ")  ENGINE = InnoDB DEFAULT CHARSET=latin1")
     TABLES['post2tag'] = (
         "CREATE TABLE   `post2tag` ("
         "   `post_id`   int(11) NOT NULL,"
-        "   `rel_id`    int(11) NOT NULL AUTO_INCREMENT,"
         "   `tag_id`    int(11) NOT NULL,"
-        "   PRIMARY KEY (`rel_id`)"
-        ")  ENGINE = InnoDB")
+        "   PRIMARY KEY (`post_id`, `tag_id`)"
+        ")  ENGINE = InnoDB DEFAULT CHARSET=latin1")
     TABLES['wp_tags'] = (
         "CREATE TABLE   `wp_tags` ("
         "   `id`        int(11) NOT NULL AUTO_INCREMENT,"
         "   `name`      varchar(255) NOT NULL,"
         "   PRIMARY KEY (`id`)"
-        ")  ENGINE = InnoDB")
+        ")  ENGINE = InnoDB DEFAULT CHARSET=latin1")
     for name, dbq in TABLES.items():
         try:
             print("Creating table {}: ".format(name), end = '')

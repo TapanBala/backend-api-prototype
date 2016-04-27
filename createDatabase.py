@@ -4,7 +4,7 @@ from config import dbConfig
 def createDatabase(cursor):
     try:
         cursor.execute(
-            "CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(dbConfig['db']))
+            "CREATE DATABASE {} DEFAULT CHARACTER SET '{}'".format(dbConfig['db'], dbConfig['charset']))
     except Exception as err:
         print("Failed creating database: {}".format(err))
         exit(1)
@@ -17,7 +17,7 @@ def process():
         connection = pymysql.connect(**dbConfig)
     except Exception as err:
         print(err)
-        connection = pymysql.connect(user = dbConfig['user'], host = dbConfig['host'])
+        connection = pymysql.connect(user = dbConfig['user'], host = dbConfig['host'], charset = dbConfig['charset'])
         cursor = connection.cursor()
         createDatabase(cursor)
     else:

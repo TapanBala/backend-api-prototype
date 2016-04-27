@@ -5,9 +5,10 @@ siteConfig = {
 }
 
 dbConfig = {
-    'user': 'root',
-    'host': 'localhost',
-    'db'  : 'test'
+    'user'   : 'root',
+    'host'   : 'localhost',
+    'db'     : 'test',
+    'charset': 'latin1'
 }
 
 postsPopulatorConfig = {
