@@ -8,8 +8,8 @@ def createTables():
         "   `id`        int(11) NOT NULL AUTO_INCREMENT,"
         "   `site`      varchar(100) NOT NULL,"
         "   `text`      longtext NOT NULL,"
-        # "   `published` timestamp NOT NULL,"
-        "   `published` int(11) NOT NULL,"
+        "   `published` timestamp NOT NULL,"
+        # "   `published` int(11) NOT NULL,"
         "   `ES`        tinyint(1) NOT NULL,"
         "   `US`        tinyint(1) NOT NULL,"
         "   `MX`        tinyint(1) NOT NULL,"
@@ -45,7 +45,7 @@ def process():
     try:
         connection = pymysql.connect(**dbConfig)
     except Exception as err:
-        print(err)
+        print("MySQL connection error : {}".format(err))
     else:
         print("Connection to database successful")
     cursor = connection.cursor()

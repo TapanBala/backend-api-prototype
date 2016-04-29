@@ -6,12 +6,7 @@ from tagsRelationGenerator import process as tagsRelationGenerator
 from rankGenerator import process as rankGenerator
 from config import siteConfig
 from faker import Faker
-from timer import Timer
-
-def displayTimer(time, timerType):
-    print("=====================================================")
-    print("Total {} Time = {}".format(timerType, time))
-    print("=====================================================")
+from timer import Timer, displayTimer
 
 def process():
     fake = Faker()

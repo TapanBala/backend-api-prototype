@@ -23,3 +23,8 @@ class Timestamp:
     def random(self):
         randomTime = randint(self.startTime, self.currentTime)
         return randomTime
+
+def displayTimer(time, timerType):
+    print("=====================================================")
+    print("Total {} Time = {}".format(timerType, time))
+    print("=====================================================")

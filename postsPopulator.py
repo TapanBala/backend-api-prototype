@@ -2,7 +2,7 @@ import pymysql.cursors
 from random import randint
 from faker import Faker
 from config import dbConfig, postTypeChoice, postsPopulatorConfig, fakeText, countryChoice, specialChoice
-from timer import Timestamp
+# from timer import Timestamp
 
 def batchInsertPosts(posts):
     query = ",".join(posts)
@@ -28,9 +28,9 @@ def insertPosts():
     for numberOfPosts in range(1, (postsPopulatorConfig['postsCount'] + 1)):
         fakeTextStart = randint(0,997000)
         fakeTextEnd   = fakeTextStart + 3000
-        text      = fakeText[fakeTextStart:fakeTextEnd]
-        published = timestamp.random()
-        # published = fake.date_time_between(start_date = "-6y", end_date = "now")
+        text      = fakeText[fakeTextStart:fakeTextEnd] + fake.pystr(max_chars = 20)
+        # published = timestamp.random()
+        published = fake.date_time_between(start_date = "-6y", end_date = "now")
         countriesWeighted = countryChoice(countriesWeighted)
         ES        = countriesWeighted[0]
         US        = countriesWeighted[1]
@@ -61,12 +61,12 @@ def insertPosts():
     print("Posts Insertion completed for {} posts".format(numberOfPosts))
 
 def process(postSite):
-    global connection, cursor, fake, timestamp
+    global connection, cursor, fake#, timestamp
     global site
     connection = pymysql.connect(**dbConfig)
     cursor = connection.cursor()
     fake = Faker()
-    timestamp = Timestamp()
+    # timestamp = Timestamp()
     site = postSite
     print("=====================================================")
     print("Generating Post data for ---> {}".format(site))
