@@ -6,7 +6,7 @@ def createTables():
     TABLES['wp_posts'] = (
         "CREATE TABLE   `wp_posts` ("
         "   `id`        int(11) NOT NULL AUTO_INCREMENT,"
-        "   `site`      varchar(100) NOT NULL,"
+        "   `site`      varchar(20) NOT NULL,"
         "   `text`      longtext NOT NULL,"
         "   `published` timestamp NOT NULL,"
         # "   `published` int(11) NOT NULL,"

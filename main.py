@@ -19,7 +19,7 @@ def process():
     tagsPopulator()
     displayTimer(timer.get_time_hhmmss(), 'Elapsed')
     for totalSites in range(siteConfig['siteCount']):
-        site = fake.url()
+        site = fake.pystr(max_chars = 20)
         postsPopulator(site)
         displayTimer(timer.get_time_hhmmss(), 'Elapsed')
     tagsRelationGenerator()

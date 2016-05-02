@@ -42,14 +42,14 @@ def insertPosts():
         posts.append("('{}', '{}', '{}', {}, {}, {}, {}, '{}', '{}', {})"
             .format(
                 site,
-                text, 
-                published, 
-                ES, 
-                US, 
-                MX, 
-                CO, 
-                postType, 
-                url, 
+                text,
+                published,
+                ES,
+                US,
+                MX,
+                CO,
+                postType,
+                url,
                 special))
         if (numberOfPosts % postsPopulatorConfig['batchSize']) == 0:
             batchInsertPosts(posts)
