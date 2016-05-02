@@ -31,7 +31,7 @@ def insertRelations():
         startRange = 1
         endRange = tagIdRange
         for tag in range(postTagCount):
-            tagId = randint(startRange, endRange + 1)
+            tagId = randint(startRange, endRange)
             relations.append("({}, {})".format(postId, tagId))
             startRange = endRange + 1
             condition = endRange + (tagIdRange * 2)
