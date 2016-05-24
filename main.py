@@ -3,7 +3,7 @@ from createTables import process as createTables
 from tagsPopulator import process as tagsPopulator
 from postsPopulator import process as postsPopulator
 from tagsRelationGenerator import process as tagsRelationGenerator
-from rankGenerator import process as rankGenerator
+from tagQueryPopulator import process as tagQueryPopulator
 from config import siteConfig
 from faker import Faker
 from timer import Timer, displayTimer
@@ -23,6 +23,8 @@ def process():
         postsPopulator(site)
         displayTimer(timer.get_time_hhmmss(), 'Elapsed')
     tagsRelationGenerator()
+    displayTimer(timer.get_time_hhmmss(), 'Elapsed')
+    tagQueryPopulator()
     displayTimer(timer.get_time_hhmmss(), 'Elapsed')
     print("=====================================================")
     print("Mock Database Created")
