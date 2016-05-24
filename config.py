@@ -83,8 +83,6 @@ def countryChoice(result):
         result = countryChoice(result) 
     return result
 
-
-
 def randomRank():
     rankConfig = []
     for x in range(1, (postsPopulatorConfig['postsCount']) + 1):

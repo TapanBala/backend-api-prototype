@@ -73,7 +73,6 @@ def createTables():
         "   PRIMARY KEY (`id`)"
         ")  ENGINE = InnoDB DEFAULT CHARSET=latin1")
 
-
     for name, dbq in TABLES.items():
         try:
             print("Creating table {}: ".format(name), end = '')
