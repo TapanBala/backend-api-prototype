@@ -2,4 +2,3 @@ tutorial-env
 __pycache__
 test.sublime-workspace
 clearDatabase.py
-testFaker.py

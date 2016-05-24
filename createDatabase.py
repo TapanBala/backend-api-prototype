@@ -17,8 +17,10 @@ def process():
         connection = pymysql.connect(**dbConfig)
     except Exception as err:
         print("Connection error : {}".format(err))
-        connection = pymysql.connect(user = dbConfig['user'], host = dbConfig['host'], charset = dbConfig['charset'])
+        connection = pymysql.connect(user = dbConfig['user'], host = dbConfig['host'], password = dbConfig['password'], charset = dbConfig['charset'])
         cursor = connection.cursor()
         createDatabase(cursor)
+        cursor.close()
     else:
         print("DATABASE `{}` exists".format(dbConfig['db']))
+    connection.close()
