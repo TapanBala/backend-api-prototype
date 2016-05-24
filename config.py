@@ -1,18 +1,24 @@
 from faker import Faker
+import random
+import numpy as np
+from bisect import bisect
+from itertools import accumulate
+
 fake = Faker()
 siteConfig = {
-    'siteCount': 10
+    'siteCount': 20
 }
 
 dbConfig = {
-    'user'   : 'root',
-    'host'   : 'localhost',
-    'db'     : 'test',
-    'charset': 'latin1'
+    'user'      : 'root',
+    'host'      : 'localhost',
+    'db'        : 'bench',
+    'password'  : '12345',
+    'charset'   : 'latin1'
 }
 
 postsPopulatorConfig = {
-    'postsCount': 60000,
+    'postsCount': 1000000,
     'batchSize' : 5000
 }
 
@@ -25,16 +31,12 @@ relationGeneratorConfig = {
     'batchSize': 5000
 }
 
-rankGeneratorConfig = {
-    'batchSize': 5000
-}
-
 fakeText = ""
 
 def choice(weighted_choices):
     choices, weights = zip(*weighted_choices)
     cumdist = list(accumulate(weights))
-    x = random() * cumdist[-1]
+    x = random.random() * cumdist[-1]
     weightedChoice = choices[bisect(cumdist, x)]
     return(weightedChoice)
 
@@ -81,13 +83,18 @@ def countryChoice(result):
         result = countryChoice(result) 
     return result
 
+
+
+def randomRank():
+    rankConfig = []
+    for x in range(1, (postsPopulatorConfig['postsCount']) + 1):
+        rankConfig.append(x)
+    np.random.shuffle(rankConfig)
+    return rankConfig
+
 def process():
     global fakeText
     postsPopulatorConfig['postsCount'] //= siteConfig['siteCount'] 
     fakeText = fake.text(max_nb_chars = 1000000)
-
-from bisect import bisect
-from itertools import accumulate
-from random import random
 
 process()
